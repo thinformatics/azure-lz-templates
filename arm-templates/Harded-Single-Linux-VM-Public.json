@@ -1,0 +1,180 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.2",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "vmwebserverdev001",
+      "minLength": 3,
+      "maxLength": 15,
+      "metadata": { "description": "Name of the Virtual Machine vm<vm role><environment><###>" }
+    },
+    "stage": {
+      "type": "string",
+      "defaultValue": "dev",
+      "allowedValues": [ "dev", "tst", "preprod", "prod" ],
+      "metadata": { "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)" }
+    },
+    "vmSize": {
+      "type": "string",
+      "defaultValue": "Standard_D2ls_v5",
+      "metadata": { "description": "Weitere VM-Sizes sind möglich, hier drei empfohlene Größen" }
+    },
+    "adminUsername": {
+      "type": "string",
+      "metadata": { "description": "Admin username for the VM" }
+    },
+    "adminPublicKey": {
+      "type": "string",
+      "metadata": { "description": "SSH public key (OpenSSH format) for the VM" }
+    },
+    "SSHPort": {
+      "type": "string",
+      "defaultValue": "*",
+      "metadata": { "description": "Quelle/CIDR für SSH-Zugriff (z. B. 203.0.113.0/24). * = überall (nicht empfohlen)" }
+    }
+  },
+  "variables": {
+    "location": "Germany West Central",
+    "stageLower": "[toLower(parameters('stage'))]",
+    "nicName": "[concat('nic-', parameters('name'), '-', variables('stageLower'), '-001')]",
+    "ipName": "[concat('pip-', parameters('name'), '-', variables('stageLower'), '-001')]",
+    "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-001')]",
+    "subnetName": "default",
+    "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-001')]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/publicIPAddresses",
+      "apiVersion": "2022-11-01",
+      "name": "[variables('ipName')]",
+      "location": "[variables('location')]",
+      "sku": { "name": "Standard" },
+      "properties": { "publicIPAllocationMethod": "Static" }
+    },
+    {
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "apiVersion": "2022-11-01",
+      "name": "[variables('nsgName')]",
+      "location": "[variables('location')]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "Allow-SSH",
+            "properties": {
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "22",
+              "sourceAddressPrefix": "[parameters('SSHPort')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 1002,
+              "direction": "Inbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/virtualNetworks",
+      "apiVersion": "2022-11-01",
+      "name": "[variables('vnetName')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [ "10.0.0.0/16" ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('subnetName')]",
+            "properties": {
+              "addressPrefix": "10.0.0.0/24",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Network/networkInterfaces",
+      "apiVersion": "2022-11-01",
+      "name": "[variables('nicName')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]",
+        "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "name": "ipconfig1",
+            "properties": {
+              "subnet": {
+                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+              },
+              "privateIPAllocationMethod": "Dynamic",
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
+              }
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines",
+      "apiVersion": "2023-03-01",
+      "name": "[parameters('name')]",
+      "location": "[variables('location')]",
+      "dependsOn": [
+        "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+      ],
+      "properties": {
+        "hardwareProfile": { "vmSize": "[parameters('vmSize')]" },
+        "osProfile": {
+          "computerName": "[parameters('name')]",
+          "adminUsername": "[parameters('adminUsername')]",
+          "linuxConfiguration": {
+            "disablePasswordAuthentication": true,
+            "ssh": {
+              "publicKeys": [
+                {
+                  "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                  "keyData": "[parameters('adminPublicKey')]"
+                }
+              ]
+            }
+          }
+        },
+        "storageProfile": {
+          "imageReference": {
+            "publisher": "Canonical",
+            "offer": "0001-com-ubuntu-server-jammy",
+            "sku": "22_04-lts-gen2",
+            "version": "latest"
+          },
+          "osDisk": {
+            "createOption": "FromImage",
+            "managedDisk": { "storageAccountType": "StandardSSD_LRS" }
+          }
+        },
+        "networkProfile": {
+          "networkInterfaces": [
+            { "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]" }
+          ]
+        }
+      }
+    }
+  ],
+  "outputs": {
+    "publicIp": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))).ipAddress]"
+    }
+  }
+}
