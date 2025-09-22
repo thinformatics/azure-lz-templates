@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.2",
+  "contentVersion": "1.0.0.3",
   "parameters": {
     "name": {
       "type": "string",
@@ -32,6 +32,16 @@
       "type": "string",
       "defaultValue": "*",
       "metadata": { "description": "Quelle/CIDR für SSH-Zugriff (z. B. 203.0.113.0/24). * = überall (nicht empfohlen)" }
+    },
+    "linuxImage": {
+      "type": "string",
+      "defaultValue": "Ubuntu Server 24.04 LTS - x64 Gen2",
+      "allowedValues": [
+        "Ubuntu Server 24.04 LTS - x64 Gen2",
+        "Red Hat Enterprise Linux 9.4 (LVM) - x64 Gen2",
+        "SUSE Linux Enterprise Server 15 SP5 +Patching - x64 Gen2"
+      ],
+      "metadata": { "description": "Auswahl des Marketplace-Images" }
     }
   },
   "variables": {
@@ -41,7 +51,24 @@
     "ipName": "[concat('pip-', parameters('name'), '-', variables('stageLower'), '-001')]",
     "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-001')]",
     "subnetName": "default",
-    "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-001')]"
+    "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-001')]",
+    "imageMap": {
+      "Ubuntu Server 24.04 LTS - x64 Gen2": {
+        "publisher": "Canonical",
+        "offer": "ubuntu-24_04-lts",
+        "sku": "server"
+      },
+      "Red Hat Enterprise Linux 9.4 (LVM) - x64 Gen2": {
+        "publisher": "RedHat",
+        "offer": "RHEL",
+        "sku": "94-lvm-gen2"
+      },
+      "SUSE Linux Enterprise Server 15 SP5 +Patching - x64 Gen2": {
+        "publisher": "SUSE",
+        "offer": "sles-15-sp5-basic",
+        "sku": "gen2"
+      }
+    }
   },
   "resources": [
     {
@@ -84,9 +111,7 @@
         "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
       ],
       "properties": {
-        "addressSpace": {
-          "addressPrefixes": [ "10.0.0.0/16" ]
-        },
+        "addressSpace": { "addressPrefixes": [ "10.0.0.0/16" ] },
         "subnets": [
           {
             "name": "[variables('subnetName')]",
@@ -153,9 +178,9 @@
         },
         "storageProfile": {
           "imageReference": {
-            "publisher": "Canonical",
-            "offer": "0001-com-ubuntu-server-jammy",
-            "sku": "22_04-lts-gen2",
+            "publisher": "[variables('imageMap')[parameters('linuxImage')].publisher]",
+            "offer": "[variables('imageMap')[parameters('linuxImage')].offer]",
+            "sku": "[variables('imageMap')[parameters('linuxImage')].sku]",
             "version": "latest"
           },
           "osDisk": {
