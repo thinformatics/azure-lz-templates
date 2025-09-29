@@ -100,7 +100,7 @@ try {
     $executedCmd = "Set-OSConfigDesiredConfiguration -Scenario '$ScenarioPath' -Default"
 
     $content = @(
-        'OsConfig ReadMe'
+        'ＯｓＣｏｎｆｉｇ  ＲｅａｄＭｅ'
         '============================================='
         ''
         'Dieses System wurde mit Microsoft OSConfigund'
