@@ -101,9 +101,9 @@ try {
 
     $content = @(
         'ＯｓＣｏｎｆｉｇ  ＲｅａｄＭｅ'
-        '============================================='
+        '#==========================#'
         ''
-        'Dieses System wurde mit Microsoft OSConfigund'
+        'Dieses System wurde mit Microsoft OSConfig und'
         'der Sicherheitsbaseline fuer Windows Server 2025 haerter konfiguriert.'
         ''
         ''
