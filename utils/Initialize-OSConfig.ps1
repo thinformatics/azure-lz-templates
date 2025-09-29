@@ -100,11 +100,11 @@ try {
     $executedCmd = "Set-OSConfigDesiredConfiguration -Scenario '$ScenarioPath' -Default"
 
     $content = @(
-        'ＯｓＣｏｎｆｉｇ  ＲｅａｄＭｅ'
+        'ＯＳＣＯＮＦＩＧ  ＲＥＡＤＭＥ'
         '#==========================#'
         ''
         'Dieses System wurde mit Microsoft OSConfig und'
-        'der Sicherheitsbaseline fuer Windows Server 2025 haerter konfiguriert.'
+        'der Sicherheitsbaseline fuer Windows Server 2025 gehaertet.'
         ''
         ''
         'Details zur Konfiguration:'
@@ -116,7 +116,7 @@ try {
         ''
         'Weitere Informationen:'
         '----------------------------------------'
-        "Link zum Git-Repo = $GitRepoLink"
+        "Link zum Skript = $GitRepoLink"
         "Link zur MS Learn-Seite (OSConfig) = $MsLearnLink"
         "Link zur MS Learn-Seite (Security Baselines) = $MsLearnLink2"
         "Link zur PSGallery (Microsoft.OSConfig) = $PsGalleryLink"
