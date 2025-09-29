@@ -4,11 +4,11 @@
     "parameters": {
         "name": {
             "type": "string",
-            "defaultValue": "vmwebserverdev001",
+            "defaultValue": "webserver",
             "minLength": 3,
-            "maxLength": 20,
+            "maxLength": 11,
             "metadata": {
-                "description": "Name der VM: vm<rolle><stage><###>"
+                "description": "Name der VM (Rolle): z.B. 'webserver', 'fileserver' etc. ohne Stage und Nummer"
             }
         },
         "stage": {
@@ -22,6 +22,15 @@
             ],
             "metadata": {
                 "description": "Stage/Umgebung für Namenskonventionen"
+            }
+        },
+        "identifier": {
+            "type": "string",
+            "defaultValue": "001",
+            "minLength": 3,
+            "maxLength": 3,
+            "metadata": {
+                "description": "Dreistellige Nummer für Namenskonventionen, z.B. '001', '002' etc."
             }
         },
         "vmSize": {
@@ -44,6 +53,7 @@
         },
         "adminPassword": {
             "type": "secureString",
+            "minLength": 12,
             "metadata": {
                 "description": "Sicheres Passwort für den lokalen Admin (Key Vault Reference empfohlen)"
             }
@@ -82,13 +92,15 @@
         }
     },
     "variables": {
+        "vmName": "[concat('vm-', parameters('name'), '-', toLower(parameters('stage')), '-', parameters('identifier'))]",
+        "vmHostname": "[concat(parameters('name'), '-', parameters('identifier'))]",
         "stageLower": "[toLower(parameters('stage'))]",
-        "nicName": "[concat('nic-', parameters('name'), '-', variables('stageLower'), '-001')]",
-        "ipName": "[concat('pip-', parameters('name'), '-', variables('stageLower'), '-001')]",
-        "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-001')]",
+        "nicName": "[concat('nic-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "ipName": "[concat('pip-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
         "subnetName": "default",
-        "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-001')]",
-        "osDiskName": "[concat('osdisk-', parameters('name'), '-', variables('stageLower'), '-001')]"
+        "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "osDiskName": "[concat('osdisk-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]"
     },
     "resources": [
         {
@@ -183,7 +195,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2023-09-01",
-            "name": "[parameters('name')]",
+            "name": "[variables('vmName')]",
             "location": "germanywestcentral",
             "identity": {
                 "type": "SystemAssigned"
@@ -193,7 +205,7 @@
                     "vmSize": "[parameters('vmSize')]"
                 },
                 "osProfile": {
-                    "computerName": "[parameters('name')]",
+                    "computerName": "[variables('vmHostname')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
                     "windowsConfiguration": {
@@ -246,7 +258,7 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', parameters('name'))]"
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
             ]
         }
     ],
