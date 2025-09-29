@@ -1,0 +1,272 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "string",
+            "defaultValue": "webserver",
+            "minLength": 3,
+            "maxLength": 11,
+            "metadata": {
+                "description": "Name der VM (Rolle): z.B. 'webserver', 'fileserver' etc. ohne Stage und Nummer"
+            }
+        },
+        "stage": {
+            "type": "string",
+            "defaultValue": "dev",
+            "allowedValues": [
+                "dev",
+                "tst",
+                "preprod",
+                "prod"
+            ],
+            "metadata": {
+                "description": "Stage/Umgebung für Namenskonventionen"
+            }
+        },
+        "identifier": {
+            "type": "string",
+            "defaultValue": "001",
+            "minLength": 3,
+            "maxLength": 3,
+            "metadata": {
+                "description": "Dreistellige Nummer für Namenskonventionen, z.B. '001', '002' etc."
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_B2ms",
+            "allowedValues": [
+                "Standard_B2ms",
+                "Standard_D4as_v5",
+                "Standard_E8ds_v5"
+            ],
+            "metadata": {
+                "description": "Empfohlene VM-Sizes; aktuelle v5-Generationen, wenn verfügbar."
+            }
+        },
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Lokaler Admin-Benutzername"
+            }
+        },
+        "adminPassword": {
+            "type": "secureString",
+            "minLength": 12,
+            "metadata": {
+                "description": "Sicheres Passwort für den lokalen Admin (Key Vault Reference empfohlen)"
+            }
+        },
+        "RDPPort": {
+            "type": "string",
+            "defaultValue": "3389",
+            "metadata": {
+                "description": "TCP-Zielport für RDP (z. B. 3389)"
+            }
+        },
+        "addressPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.0.0/16",
+            "metadata": {
+                "description": "Address Space des VNET (CIDR)"
+            }
+        },
+        "subnetPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.1.0/24",
+            "metadata": {
+                "description": "Subnetz-Präfix für 'default' (CIDR)"
+            }
+        },
+        "scenario": {
+            "type": "string",
+            "allowedValues": [
+                "MemberServer",
+                "WorkgroupMember",
+                "DomainController"
+            ],
+            "metadata": {
+                "description": "OSConfig-Szenario: MemberServer = Windows Server in Domäne (z.B. Fileserver), WorkgroupMember = Windows Server ohne Domäne, DomainController = Active Directory Domain Controller"
+            }
+        }
+    },
+    "variables": {
+        "vmName": "[concat('vm-', parameters('name'), '-', toLower(parameters('stage')), '-', parameters('identifier'))]",
+        "vmHostname": "[concat(parameters('name'), '-', parameters('identifier'))]",
+        "stageLower": "[toLower(parameters('stage'))]",
+        "nicName": "[concat('nic-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "ipName": "[concat('pip-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "subnetName": "default",
+        "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "osDiskName": "[concat('osdisk-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2023-11-01",
+            "name": "[variables('vnetName')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetPrefix')]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                            }
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2023-11-01",
+            "name": "[variables('nsgName')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "securityRules": [
+                    {
+                        "name": "Allow-RDP",
+                        "properties": {
+                            "priority": 1000,
+                            "access": "Allow",
+                            "direction": "Inbound",
+                            "protocol": "Tcp",
+                            "sourcePortRange": "*",
+                            "destinationPortRange": "[parameters('RDPPort')]",
+                            "sourceAddressPrefix": "*",
+                            "destinationAddressPrefix": "*"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2023-11-01",
+            "name": "[variables('ipName')]",
+            "location": "germanywestcentral",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Static"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2023-11-01",
+            "name": "[variables('nicName')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
+                            }
+                        }
+                    }
+                ],
+                "enableAcceleratedNetworking": false
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2023-09-01",
+            "name": "[variables('vmName')]",
+            "location": "germanywestcentral",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('vmHostname')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+                        "provisionVMAgent": true
+                    }
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2022-datacenter",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[variables('osDiskName')]",
+                        "createOption": "FromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        }
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2023-09-01",
+            "name": "[concat(variables('vmName'), '/CustomScriptExtension-OSConfig')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.10",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "fileUris": [
+                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/Initialize-OSConfig.ps1"
+                    ],
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Bypass -NoProfile -NonInteractive -File Initialize-OSConfig.ps1 -Scenario ', parameters('scenario'))]"
+                },
+                "protectedSettings": {}
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
+            ]
+        }
+    ],
+    "outputs": {
+        "publicIpAddress": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))).ipAddress]"
+        }
+    }
+}

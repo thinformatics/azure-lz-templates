@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        Initialisiert die OSConfig-Baseline auf einem Windows OS / Server 2022/2025.
+        Initialisiert die OSConfig-Baseline auf einem Windows Server 2022 & 2025.
 
     .DESCRIPTION
         Dieses Skript installiert das PowerShell-Modul Microsoft.OSConfig aus der PSGallery,
