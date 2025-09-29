@@ -74,12 +74,10 @@
             "allowedValues": [
                 "MemberServer",
                 "WorkgroupMember",
-                "DomainController",
-                "SecuredCore",
-                "DefenderAntivirus"
+                "DomainController"
             ],
             "metadata": {
-                "description": "OSConfig-Szenario (wird an Skript übergeben)"
+                "description": "OSConfig-Szenario: MemberServer = Windows Server in Domäne (z.B. Fileserver), WorkgroupMember = Windows Server ohne Domäne, DomainController = Active Directory Domain Controller"
             }
         }
     },
