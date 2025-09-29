@@ -1,7 +1,8 @@
 # Azure Landing Zones Templates
+
 Azure Landing Zones Templates - for free usage without warranty and support.
 
-### Azure Templates
+## Azure Templates
 
 | Template Name | Description | Resources | Archtype / Perfect for | Links / Tags |
 |---------|-----------|-----------|-------------|---------|

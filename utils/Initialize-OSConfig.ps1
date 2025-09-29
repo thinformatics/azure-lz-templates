@@ -104,13 +104,13 @@ try {
         '============================================='
         ''
         'Dieses System wurde mit Microsoft OSConfigund'
-        'der Sicherheitsbaseline fuer Windows Server 2025 (https://learn.microsoft.com/en-us/windows-server/security/osconfig/osconfig-how-to-configure-security-baselines)'
-        'haerter konfiguriert.'
+        'der Sicherheitsbaseline fuer Windows Server 2025 haerter konfiguriert.'
         ''
         ''
         'Details zur Konfiguration:'
         '----------------------------------------'
         "Datum der Ausfuehrung = $timestamp"
+        "Szenario = $Scenario"
         "Set-OSConfig Befehl = $executedCmd"
         ''
         ''

@@ -243,7 +243,7 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2023-09-01",
-            "name": "[concat(parameters('name'), '/CustomScriptExtension-OSConfig')]",
+            "name": "[concat(variables('vmName'), '/CustomScriptExtension-OSConfig')]",
             "location": "germanywestcentral",
             "properties": {
                 "publisher": "Microsoft.Compute",
@@ -255,7 +255,8 @@
                         "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/Initialize-OSConfig.ps1"
                     ],
                     "commandToExecute": "[concat('powershell -ExecutionPolicy Bypass -NoProfile -NonInteractive -File Initialize-OSConfig.ps1 -Scenario ', parameters('scenario'))]"
-                }
+                },
+                "protectedSettings": {}
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
