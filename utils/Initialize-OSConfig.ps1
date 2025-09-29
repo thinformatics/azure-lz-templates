@@ -37,8 +37,8 @@
 #region define parameters
 param(
     # Scenario: Welches Szenario soll angewendet werden?
-    [Parameter(Mandatory=$true)]
-    [ValidateSet('MemberServer','WorkgroupMember','DomainController','SecuredCore','DefenderAntivirus')]
+    [Parameter(Mandatory = $true)]
+    [ValidateSet('MemberServer', 'WorkgroupMember', 'DomainController', 'SecuredCore', 'DefenderAntivirus')]
     [string]$Scenario
 )
 #endregion
@@ -65,12 +65,12 @@ function Install-OSConfigOnline {
 function Get-ScenarioPath {
     param([string]$Scenario)
     switch ($Scenario) {
-        'MemberServer'       { 'SecurityBaseline/WS2025/MemberServer' }
-        'WorkgroupMember'    { 'SecurityBaseline/WS2025/WorkgroupMember' }
-        'DomainController'   { 'SecurityBaseline/WS2025/DomainController' }
-        'SecuredCore'        { 'SecuredCore' }
-        'DefenderAntivirus'  { 'Defender/Antivirus' }
-        default              { throw "Unbekanntes Szenario: $Scenario" }
+        'MemberServer' { 'SecurityBaseline/WS2025/MemberServer' }
+        'WorkgroupMember' { 'SecurityBaseline/WS2025/WorkgroupMember' }
+        'DomainController' { 'SecurityBaseline/WS2025/DomainController' }
+        'SecuredCore' { 'SecuredCore' }
+        'DefenderAntivirus' { 'Defender/Antivirus' }
+        default { throw "Unbekanntes Szenario: $Scenario" }
     }
 }
 #endregion
@@ -84,6 +84,58 @@ try {
 
     # Default-Baseline anwenden
     Set-OSConfigDesiredConfiguration -Scenario $scenarioPath -Default -ErrorAction Stop
+
+
+    ##########################################################################
+    # ReadMe-Datei auf Desktops aller Benutzer erstellen
+    ##########################################################################
+
+    $FileName = 'OsConfig ReadMe.txt'
+    $GitRepoLink = 'https://github.com/thinformatics/azure-lz-templates/blob/main/utils/Initialize-OSConfig.ps1'
+    $MsLearnLink = 'https://learn.microsoft.com/de-de/windows-server/security/osconfig/osconfig-overview'
+    $MsLearnLink2 = 'https://learn.microsoft.com/en-us/windows-server/security/osconfig/osconfig-how-to-configure-security-baselines'
+    $PsGalleryLink = 'https://www.powershellgallery.com/packages/Microsoft.OSConfig'
+
+    $timestamp = (Get-Date).ToString('yyyy-MM-dd HH:mm:ss zzz')
+    $executedCmd = "Set-OSConfigDesiredConfiguration -Scenario '$ScenarioPath' -Default"
+
+    $content = @(
+        'OsConfig ReadMe'
+        '============================================='
+        ''
+        'Dieses System wurde mit Microsoft OSConfigund'
+        'der Sicherheitsbaseline fuer Windows Server 2025 (https://learn.microsoft.com/en-us/windows-server/security/osconfig/osconfig-how-to-configure-security-baselines)'
+        'haerter konfiguriert.'
+        ''
+        ''
+        'Details zur Konfiguration:'
+        '----------------------------------------'
+        "Datum der Ausfuehrung = $timestamp"
+        "Set-OSConfig Befehl = $executedCmd"
+        ''
+        ''
+        'Weitere Informationen:'
+        '----------------------------------------'
+        "Link zum Git-Repo = $GitRepoLink"
+        "Link zur MS Learn-Seite (OSConfig) = $MsLearnLink"
+        "Link zur MS Learn-Seite (Security Baselines) = $MsLearnLink2"
+        "Link zur PSGallery (Microsoft.OSConfig) = $PsGalleryLink"
+    ) -join [Environment]::NewLine
+
+    $defaultDesktop = 'C:\Users\Default\Desktop'
+    if (-not (Test-Path $defaultDesktop)) {
+        New-Item -ItemType Directory -Path $defaultDesktop -Force | Out-Null
+    }
+
+    $outPath = Join-Path $defaultDesktop $FileName
+    $content | Out-File -FilePath $outPath -Encoding UTF8
+
+    ##########################################################################
+
+
+    # Reboot 1 Minuten nach CSE-Abschluss einplanen (läuft als SYSTEM) da neustart erforderlich
+    $time = (Get-Date).AddMinutes(1).ToString('HH:mm')
+    schtasks /Create /TN "RebootAfterCSE" /SC ONCE /ST $time /TR "shutdown.exe /r /t 5 /f /c \"Post-CSE reboot\"" /RU "SYSTEM" /F
 
     exit 0
 }
