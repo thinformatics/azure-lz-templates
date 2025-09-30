@@ -100,7 +100,7 @@ try {
     $executedCmd = "Set-OSConfigDesiredConfiguration -Scenario '$ScenarioPath' -Default"
 
     $content = @(
-        'ＯＳＣＯＮＦＩＧ  ＲＥＡＤＭＥ'
+        'OSCONFIG README'
         '#==========================#'
         ''
         'Dieses System wurde mit Microsoft OSConfig und'
@@ -122,7 +122,7 @@ try {
         "Link zur PSGallery (Microsoft.OSConfig) = $PsGalleryLink"
     ) -join [Environment]::NewLine
 
-    $defaultDesktop = 'C:\Users\Default\Desktop'
+    $defaultDesktop = 'C:\Users\Public\Desktop'
     if (-not (Test-Path $defaultDesktop)) {
         New-Item -ItemType Directory -Path $defaultDesktop -Force | Out-Null
     }
