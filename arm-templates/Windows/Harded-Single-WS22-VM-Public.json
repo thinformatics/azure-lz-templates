@@ -36,13 +36,22 @@
         "vmSize": {
             "type": "string",
             "defaultValue": "Standard_B2ms",
+            "metadata": {
+                "description": "VM-Größe der virtuellen Maschine, z.B. 'Standard_B2ms'"
+            }
+        },
+        "diskStorageType": {
+            "type": "string",
+            "defaultValue": "Standard SSD — LRS (Allround)",
             "allowedValues": [
-                "Standard_B2ms",
-                "Standard_D4as_v5",
-                "Standard_E8ds_v5"
+                "Standard HDD — LRS (günstig, seltene I/O)",
+                "Standard SSD — LRS (Allround)",
+                "Premium SSD — LRS  (Prod/IOPS)",
+                "Standard SSD — ZRS (Zonen redundant)",
+                "Premium SSD — ZRS  (Zonen redundant)"
             ],
             "metadata": {
-                "description": "Empfohlene VM-Sizes; aktuelle v5-Generationen, wenn verfügbar."
+                "description": "Wähle den Speichertyp für die EINZIGE OS-Disk."
             }
         },
         "adminUsername": {
@@ -52,17 +61,10 @@
             }
         },
         "adminPassword": {
-            "type": "secureString",
+            "type": "securestring",
             "minLength": 12,
             "metadata": {
                 "description": "Sicheres Passwort für den lokalen Admin (Key Vault Reference empfohlen)"
-            }
-        },
-        "RDPPort": {
-            "type": "string",
-            "defaultValue": "3389",
-            "metadata": {
-                "description": "TCP-Zielport für RDP (z. B. 3389)"
             }
         },
         "addressPrefix": {
@@ -100,7 +102,15 @@
         "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
         "subnetName": "default",
         "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
-        "osDiskName": "[concat('osdisk-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]"
+        "osDiskName": "[concat('osdisk-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "diskSkuMap": {
+            "Standard HDD — LRS (günstig, seltene I/O)": "Standard_LRS",
+            "Standard SSD — LRS (Allround)": "StandardSSD_LRS",
+            "Premium SSD — LRS  (Prod/IOPS)": "Premium_LRS",
+            "Standard SSD — ZRS (Zonen redundant)": "StandardSSD_ZRS",
+            "Premium SSD — ZRS  (Zonen redundant)": "Premium_ZRS"
+        },
+        "diskStorageSku": "[variables('diskSkuMap')[parameters('diskStorageType')]]"
     },
     "resources": [
         {
@@ -136,21 +146,7 @@
             "name": "[variables('nsgName')]",
             "location": "germanywestcentral",
             "properties": {
-                "securityRules": [
-                    {
-                        "name": "Allow-RDP",
-                        "properties": {
-                            "priority": 1000,
-                            "access": "Allow",
-                            "direction": "Inbound",
-                            "protocol": "Tcp",
-                            "sourcePortRange": "*",
-                            "destinationPortRange": "[parameters('RDPPort')]",
-                            "sourceAddressPrefix": "*",
-                            "destinationAddressPrefix": "*"
-                        }
-                    }
-                ]
+                "securityRules": []
             }
         },
         {
@@ -201,6 +197,9 @@
                 "type": "SystemAssigned"
             },
             "properties": {
+                "securityProfile": {
+                    "encryptionAtHost": true
+                },
                 "hardwareProfile": {
                     "vmSize": "[parameters('vmSize')]"
                 },
@@ -224,7 +223,7 @@
                         "name": "[variables('osDiskName')]",
                         "createOption": "FromImage",
                         "managedDisk": {
-                            "storageAccountType": "Premium_LRS"
+                            "storageAccountType": "[variables('diskStorageSku')]"
                         }
                     }
                 },
