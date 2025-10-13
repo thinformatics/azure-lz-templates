@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "description": "Windows Server 2025 VM (Online LZ) mit OSConfig-Baseline.",
+        "description": "Windows Server 2025 VM (Corp LZ) mit OSConfig-Baseline.",
         "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
         "category": "Compute/VirtualMachines"
     },
@@ -84,21 +84,21 @@
             "type": "securestring",
             "minLength": 12,
             "metadata": {
-                "description": "Sicheres Passwort für den lokalen Admin. 1x Groß- & Kleinbuchstaben, Min. 12 Zeichen, 1x klein 1x großbuchstabe 1x Stonderzeiche"
+                "description": "Sicheres Passwort für den lokalen Admin (Key Vault Reference empfohlen)"
             }
         },
         "addressPrefix": {
             "type": "string",
             "defaultValue": "10.10.0.0/16",
             "metadata": {
-                "description": "Address Space des VNET (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+                "description": "Address Space des VNET (CIDR)"
             }
         },
         "subnetPrefix": {
             "type": "string",
             "defaultValue": "10.10.1.0/24",
             "metadata": {
-                "description": "Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+                "description": "Subnetz-Präfix für 'default' (CIDR)"
             }
         },
         "scenario": {
@@ -118,7 +118,6 @@
         "vmHostname": "[concat(parameters('name'), '-', parameters('identifier'))]",
         "stageLower": "[toLower(parameters('stage'))]",
         "nicName": "[concat('nic-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
-        "ipName": "[concat('pip-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
         "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
         "subnetName": "default",
         "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
@@ -139,6 +138,18 @@
         "OsConfigScenario": "[variables('scenarioMap')[parameters('scenario')]]"
     },
     "resources": [
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2023-11-01",
+            "name": "[variables('nsgName')]",
+            "location": "germanywestcentral",
+            "tags": {
+                "owner": "[parameters('ownerTag')]"
+            },
+            "properties": {
+                "securityRules": []
+            }
+        },
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2023-11-01",
@@ -170,33 +181,6 @@
             ]
         },
         {
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2023-11-01",
-            "name": "[variables('nsgName')]",
-            "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
-            "properties": {
-                "securityRules": []
-            }
-        },
-        {
-            "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2023-11-01",
-            "name": "[variables('ipName')]",
-            "location": "germanywestcentral",
-            "sku": {
-                "name": "Standard"
-            },
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
-            "properties": {
-                "publicIPAllocationMethod": "Static"
-            }
-        },
-        {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2023-11-01",
             "name": "[variables('nicName')]",
@@ -212,18 +196,14 @@
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
                             },
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
-                            }
+                            "privateIPAllocationMethod": "Dynamic"
                         }
                     }
                 ],
                 "enableAcceleratedNetworking": false
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
-                "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
             ]
         },
         {
@@ -264,6 +244,7 @@
                                 "rebootSetting": "IfRequired"
                             }
                         }
+
                     }
                 },
                 "storageProfile": {
@@ -323,9 +304,9 @@
         }
     ],
     "outputs": {
-        "publicIpAddress": {
+        "privateIpAddress": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))).ipAddress]"
+            "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress]"
         }
     }
 }

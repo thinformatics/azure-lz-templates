@@ -1,7 +1,7 @@
 # ![VM](../../assets/svg/vm.svg) Windows Hardened VMs
 
 ARM Templates zur automatisierten Bereitstellung von gehärteten Windows Server VMs in Azure.  
-Die Templates werden mit den Microsoft OS Config Security Baselines und ergänzen Sicherheitsmaßnahmen für Public und Private Deployments über erstellt.
+Die Templates werden mit den Microsoft OS Config Security Baselines und ergänzen Sicherheitsmaßnahmen für Online (Public) und Corp (Private) Deployments erstellt.
 
 ---
 
@@ -28,7 +28,7 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen automatisiert ko
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| Windows Server 2025 [*latest*] | ![PIP](../../assets/svg/pip.svg) Public IP |
+| Windows Server 2025 - Gen. 2 [*latest*] | ![PIP](../../assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](../../assets/svg/vnet.svg) VNET |
 | ![Version](https://img.shields.io/badge/Version-0.0.9-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](../../assets/svg/nic.svg) Network Interface |
 | ![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet) | ![NSG](../../assets/svg/nsg.svg) Network Security Group |
@@ -42,7 +42,7 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen automatisiert ko
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| Windows Server 2022 [*latest*] | ![PIP](../../assets/svg/pip.svg) Public IP |
+| Windows Server 2022 - Gen. 2 [*latest*] | ![PIP](../../assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](../../assets/svg/vnet.svg) VNET |
 |  ![Version](https://img.shields.io/badge/Version-0.0.9-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](../../assets/svg/nic.svg) Network Interface |
 |  | ![NSG](../../assets/svg/nsg.svg) Network Security Group |
@@ -58,7 +58,7 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen automatisiert ko
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| Windows Server 2025 – Azure Edition [*latest*] | kein Public IP |
+| Windows Server 2025 - Gen. 2 [*latest*] | kein Public IP |
 | Region: Germany West Central | ![VNET](../../assets/svg/vnet.svg) VNET |
 |![Version](https://img.shields.io/badge/Version-0.0.9-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)  | ![NIC](../../assets/svg/nic.svg) Network Interface |
 |  | ![NSG](../../assets/svg/nsg.svg) Network Security Group |
@@ -71,7 +71,7 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen automatisiert ko
 ## 🛡️ Security Recommendations
 
 Nach der Bereitstellung können je nach Umgebung zusätzliche Sicherheitsempfehlungen erscheinen.  
-Diese Empfehlungen müssen zentral auf Subscription- oder Policy-Ebene umgesetzt werden.
+Diese Empfehlungen müssen zentral auf Subscription-, Defender- oder Policy-Ebene umgesetzt werden.
 
 ### Übersicht
 
@@ -98,10 +98,11 @@ Backup aktivieren über Recovery Services Vault und entsprechende Backup Policy 
 
 #### Only approved VM extensions should be installed
 
-CustomScriptExtension-OSConfig Erweiterungen entfernen:
+CustomScriptExtension-OSConfig Erweiterungen kann nach dem Deployment entfernen werden:
 
-- VM → **Extensions** → *CustomScriptExtension-OSConfig* → **Uninstall**  
-Danach gewünschte Extensions in Defender als „Approved“ markieren.
+- VM → **Extensions** → *CustomScriptExtension-OSConfig* → **Uninstall**
+
+Weitere gewünschte Extensions können in Defender als „Approved“ markieren.
 
 #### Windows Defender Exploit Guard should be enabled on machines
 
