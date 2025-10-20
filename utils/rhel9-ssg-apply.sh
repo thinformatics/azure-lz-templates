@@ -33,7 +33,7 @@
 #   2 = oscap-Prozess mit verbleibenden FAIL-Regeln (technisch ok)
 #
 # Links:
-#   Skript (Repository)   = https://github.com/thin-formatics/rhel9-ssg-apply
+#   Skript (Repository)   = https://github.com/thinformatics/azure-lz-templates/blob/main/utils/rhel9-ssg-apply.sh
 #   Red Hat Security Guide = https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/security_hardening/
 #   OpenSCAP               = https://www.open-scap.org/
 #   SCAP Security Guide    = https://github.com/ComplianceAsCode/content
@@ -43,9 +43,6 @@
 #   - Nach der Remediation wird ein Neustart empfohlen.
 #   - Reports werden unter /var/tmp/ssg-*.html und /var/tmp/ssg-*.arf abgelegt.
 #
-# Security Best Practices:
-#   - Verwende stets die aktuelle Version der SSG-Inhalte.
-#   - Führe das Skript nur auf Testsystemen aus, bevor du es in Produktion nutzt.
 ###############################################################################
 
 set -euo pipefail
