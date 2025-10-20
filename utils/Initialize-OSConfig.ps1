@@ -17,7 +17,7 @@
         Das anzuwendende Szenario (z.B. 'MemberServer').
 
     .NOTES
-        Autor:       Justus Knoop (thinformatics AG))
+        Autor:       Justus Knoop (thinformatics AG)
         Erstellt:    2025-09-23
         Version:     1.0.0
         GitHub:      https://github.com/thinformatics/azure-lz-templates
@@ -100,6 +100,7 @@ try {
     $executedCmd = "Set-OSConfigDesiredConfiguration -Scenario '$ScenarioPath' -Default"
 
     $content = @(
+        '#==========================#'
         'OSCONFIG README'
         '#==========================#'
         ''
