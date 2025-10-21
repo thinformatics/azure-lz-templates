@@ -8,8 +8,7 @@
 #
 # Author      : Justus Knoop (thinformatics AG)
 # Version     : 1.0.0
-# Created     : 2025-10-14
-# Last Update : 2025-10-14
+# Created     : 2025-10-15
 # GitHub      : https://github.com/thinformatics/azure-lz-templates
 #
 # License     : Apache License 2.0
@@ -33,7 +32,7 @@
 #   2 = oscap-Prozess mit verbleibenden FAIL-Regeln (technisch ok)
 #
 # Links:
-#   Skript (Repository)   = https://github.com/thinformatics/azure-lz-templates/blob/main/utils/rhel9-ssg-apply.sh
+#   GitHub                 = https://github.com/thinformatics/azure-lz-templates/blob/main/utils/rhel9-ssg-apply.sh
 #   Red Hat Security Guide = https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/9/html/security_hardening/
 #   OpenSCAP               = https://www.open-scap.org/
 #   SCAP Security Guide    = https://github.com/ComplianceAsCode/content

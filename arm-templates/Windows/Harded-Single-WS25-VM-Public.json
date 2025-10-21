@@ -13,7 +13,7 @@
             "minLength": 3,
             "maxLength": 11,
             "metadata": {
-                "description": "Name der VM (Rolle): z.B. 'webserver', 'fileserver' etc. ohne Stage und Nummer"
+                "description": "Rollenbasierter Kurzname der VM (ohne Stage und Nummer), z. B. 'webserver', 'fileserver'."
             }
         },
         "stage": {
@@ -26,7 +26,7 @@
                 "prod"
             ],
             "metadata": {
-                "description": "Stage/Umgebung für Namenskonventionen"
+                "description": "Verantwortliche Einheit (Team, Gruppe oder E-Mail) für Betrieb/Ownership; wird als Tag 'owner' gesetzt."
             }
         },
         "identifier": {
@@ -63,7 +63,7 @@
                 "Premium SSD — ZRS  (Zonenredundant in der Region)"
             ],
             "metadata": {
-                "description": "OS-SpeicherTyp. Die Regeion hat drei Zonen / Separate Rechenzentren."
+                "description": "OS-SpeicherTyp. Die Region hat drei Zonen / Separate Rechenzentren."
             }
         },
         "osDiskSizeGiB": {
@@ -84,7 +84,7 @@
             "type": "securestring",
             "minLength": 12,
             "metadata": {
-                "description": "Sicheres Passwort für den lokalen Admin. 1x Groß- & Kleinbuchstaben, Min. 12 Zeichen, 1x klein 1x großbuchstabe 1x Stonderzeiche"
+                "description": "Sicheres Passwort für den lokalen Administrator: mindestens 12 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen."
             }
         },
         "addressPrefix": {

@@ -44,8 +44,8 @@ set -euo pipefail
 trap 'echo "ERROR at line $LINENO: $BASH_COMMAND" >&2' ERR
 
 # ---------- Konfiguration ----------
-DS_XML="" # wird automatisch für Ubuntu 24.x ermittelt
-REQ_PKGS=(openscap-scanner scap-security-guide)
+DS_XML="" # wird automatisch für Ubuntu 24.x ermitteltl
+REQ_PKGS=(openscap-scanner ssg-debderived)
 ENABLE_ETC_SYMLINK=true # Symlink /etc/ssg-remediation-info -> README
 ENABLE_MOTD_HINT=true   # Hinweis bei Login anzeigen
 

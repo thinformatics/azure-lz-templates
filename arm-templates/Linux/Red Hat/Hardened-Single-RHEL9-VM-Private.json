@@ -2,14 +2,14 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "description": "Windows Server 2025 VM (Corp LZ) mit OSConfig-Baseline.",
+        "description": "Red Hat Enterprise Linux 9.x VM (Corp LZ) mit Trusted Launch, Encryption at Host und automatischer SSG-Härtung per Custom Script (OpenSCAP/SCAP Security Guide).",
         "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
         "category": "Compute/VirtualMachines"
     },
     "parameters": {
         "name": {
             "type": "string",
-            "defaultValue": "fileserver",
+            "defaultValue": "webserver",
             "minLength": 3,
             "maxLength": 11,
             "metadata": {
@@ -26,7 +26,7 @@
                 "prod"
             ],
             "metadata": {
-                "description": "Verantwortliche Einheit (Team, Gruppe oder E-Mail) für Betrieb/Ownership; wird als Tag 'owner' gesetzt."
+                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
             }
         },
         "identifier": {
@@ -42,7 +42,7 @@
             "type": "string",
             "defaultValue": "TEAM_ODER_OWNER",
             "metadata": {
-                "description": "Owner/Verantwortlicher dieser Ressourcen (Name, Gruppe oder E-Mail) je nach eigener Konvention."
+                "description": "Verantwortliche Einheit (Team, Gruppe oder E-Mail) für Betrieb/Ownership; wird als Tag 'owner' gesetzt."
             }
         },
         "vmSize": {
@@ -76,9 +76,7 @@
         },
         "adminUsername": {
             "type": "string",
-            "metadata": {
-                "description": "Lokaler Admin-Benutzername"
-            }
+            "metadata": { "description": "Lokaler Linux-Benutzer mit sudo-Rechten." }
         },
         "adminPassword": {
             "type": "securestring",
@@ -91,25 +89,33 @@
             "type": "string",
             "defaultValue": "10.10.0.0/16",
             "metadata": {
-                "description": "Address Space des VNET (CIDR)"
+                "description": "Address Space des VNET (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
             }
         },
         "subnetPrefix": {
             "type": "string",
             "defaultValue": "10.10.1.0/24",
             "metadata": {
-                "description": "Subnetz-Präfix für 'default' (CIDR)"
+                "description": "Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
             }
         },
-        "scenario": {
+        "ssgProfile": {
             "type": "string",
+            "defaultValue": "cis_l1_server",
             "allowedValues": [
-                "Member Server - Windows Server in Domäne (z.B. Fileserver)",
-                "Workgroup Member - Windows Server ohne Domäne",
-                "Domain Controller - Speziell für Active Directory Domain Controller"
+                "cis_l1_server",
+                "cis_l2_server",
+                "stig",
+                "stig_gui",
+                "anssi_minimal",
+                "anssi_intermediary",
+                "anssi_high",
+                "anssi_enhanced",
+                "pci_dss",
+                "ospp"
             ],
             "metadata": {
-                "description": "OS-Config-Szenario in dem die VM vorkonfiguriert werden soll."
+                "description": "Zu verwendendes SCAP/SSG-Profil (Kurzname) für die Remediation auf RHEL 9."
             }
         }
     },
@@ -129,13 +135,7 @@
             "Standard SSD — ZRS (Zonenredundant in der Region)": "StandardSSD_ZRS",
             "Premium SSD — ZRS  (Zonenredundant in der Region)": "Premium_ZRS"
         },
-        "diskStorageSku": "[variables('diskSkuMap')[parameters('diskStorageType')]]",
-        "scenarioMap": {
-            "Member Server - Windows Server in Domäne (z.B. Fileserver)": "MemberServer",
-            "Workgroup Member - Windows Server ohne Domäne": "WorkgroupMember",
-            "Domain Controller - Speziell für Active Directory Domain Controller": "DomainController"
-        },
-        "OsConfigScenario": "[variables('scenarioMap')[parameters('scenario')]]"
+        "diskStorageSku": "[variables('diskSkuMap')[parameters('diskStorageType')]]"
     },
     "resources": [
         {
@@ -143,26 +143,18 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('nsgName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
-            "properties": {
-                "securityRules": []
-            }
+            "tags": { "owner": "[parameters('ownerTag')]" },
+            "properties": { "securityRules": [] }
         },
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2023-11-01",
             "name": "[variables('vnetName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
+            "tags": { "owner": "[parameters('ownerTag')]" },
             "properties": {
                 "addressSpace": {
-                    "addressPrefixes": [
-                        "[parameters('addressPrefix')]"
-                    ]
+                    "addressPrefixes": [ "[parameters('addressPrefix')]" ]
                 },
                 "subnets": [
                     {
@@ -185,9 +177,7 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('nicName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
+            "tags": { "owner": "[parameters('ownerTag')]" },
             "properties": {
                 "ipConfigurations": [
                     {
@@ -211,12 +201,8 @@
             "apiVersion": "2023-09-01",
             "name": "[variables('vmName')]",
             "location": "germanywestcentral",
-            "identity": {
-                "type": "SystemAssigned"
-            },
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
+            "identity": { "type": "SystemAssigned" },
+            "tags": { "owner": "[parameters('ownerTag')]" },
             "properties": {
                 "securityProfile": {
                     "encryptionAtHost": true,
@@ -226,32 +212,24 @@
                         "vTpmEnabled": true
                     }
                 },
-                "hardwareProfile": {
-                    "vmSize": "[parameters('vmSize')]"
-                },
+                "hardwareProfile": { "vmSize": "[parameters('vmSize')]" },
                 "osProfile": {
                     "computerName": "[variables('vmHostname')]",
                     "adminUsername": "[parameters('adminUsername')]",
                     "adminPassword": "[parameters('adminPassword')]",
-                    "windowsConfiguration": {
-                        "enableAutomaticUpdates": true,
-                        "provisionVMAgent": true,
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false,
                         "patchSettings": {
                             "patchMode": "AutomaticByPlatform",
-                            "assessmentMode": "AutomaticByPlatform",
-                            "enableHotpatching": true,
-                            "automaticByPlatformSettings": {
-                                "rebootSetting": "IfRequired"
-                            }
+                            "assessmentMode": "AutomaticByPlatform"
                         }
-
                     }
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2025-datacenter-g2",
+                        "publisher": "RedHat",
+                        "offer": "RHEL",
+                        "sku": "9-lvm-gen2",
                         "version": "latest"
                     },
                     "osDisk": {
@@ -270,11 +248,7 @@
                         }
                     ]
                 },
-                "diagnosticsProfile": {
-                    "bootDiagnostics": {
-                        "enabled": true
-                    }
-                }
+                "diagnosticsProfile": { "bootDiagnostics": { "enabled": true } }
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
@@ -283,19 +257,19 @@
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
             "apiVersion": "2023-09-01",
-            "name": "[concat(variables('vmName'), '/CustomScriptExtension-OSConfig')]",
+            "name": "[concat(variables('vmName'), '/CustomScriptExtension-Linux')]",
             "location": "germanywestcentral",
             "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.10",
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.1",
                 "autoUpgradeMinorVersion": true,
                 "settings": {},
                 "protectedSettings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/Initialize-OSConfig.ps1"
+                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/rhel9-ssg-apply.sh"
                     ],
-                    "commandToExecute": "[concat('powershell -ExecutionPolicy Bypass -NoProfile -NonInteractive -File Initialize-OSConfig.ps1 -Scenario ', variables('OsConfigScenario'))]"
+                    "commandToExecute": "[format('bash rhel9-ssg-apply.sh {0}', parameters('ssgProfile'))]"
                 }
             },
             "dependsOn": [
