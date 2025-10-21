@@ -17,9 +17,6 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen automatisiert ko
 - [OSConfig Security Baselines konfigurieren](https://learn.microsoft.com/en-us/windows-server/security/osconfig/osconfig-how-to-configure-security-baselines)  
 - [PowerShell Gallery – Microsoft.OSConfig](https://www.powershellgallery.com/packages/Microsoft.OSConfig)
 
-> [!NOTE]  
-> Die Baseline ist für **Windows Server 2025** entwickelt. Windows Server 2022 ist ab einem bestimmten Build kompatibel, wurde jedoch bislang nur für die Installation, nicht aber für alle Security Settings von uns getestet.
-
 ---
 
 ## 🌐 Online / Public VMs
@@ -28,7 +25,7 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen automatisiert ko
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| Windows Server 2025 - Gen. 2 [*latest*] | ![PIP](../../assets/svg/pip.svg) Public IP |
+| 🪟 Windows Server 2025 - Gen2 [*latest*] | ![PIP](../../assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](../../assets/svg/vnet.svg) VNET |
 | ![Version](https://img.shields.io/badge/Version-0.0.9-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](../../assets/svg/nic.svg) Network Interface |
 | ![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet) | ![NSG](../../assets/svg/nsg.svg) Network Security Group |
@@ -42,7 +39,7 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen automatisiert ko
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| Windows Server 2022 - Gen. 2 [*latest*] | ![PIP](../../assets/svg/pip.svg) Public IP |
+| 🪟 Windows Server 2022 - Gen2 [*latest*] | ![PIP](../../assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](../../assets/svg/vnet.svg) VNET |
 |  ![Version](https://img.shields.io/badge/Version-0.0.9-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](../../assets/svg/nic.svg) Network Interface |
 |  | ![NSG](../../assets/svg/nsg.svg) Network Security Group |
@@ -58,7 +55,7 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen automatisiert ko
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| Windows Server 2025 - Gen. 2 [*latest*] | kein Public IP |
+| 🪟 Windows Server 2025 - Gen2 [*latest*] | keine Public IP |
 | Region: Germany West Central | ![VNET](../../assets/svg/vnet.svg) VNET |
 |![Version](https://img.shields.io/badge/Version-0.0.9-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)  | ![NIC](../../assets/svg/nic.svg) Network Interface |
 |  | ![NSG](../../assets/svg/nsg.svg) Network Security Group |
@@ -90,7 +87,10 @@ Diese Empfehlungen müssen zentral auf Subscription-, Defender- oder Policy-Eben
 
 #### Azure Backup should be enabled for virtual machines
 
-Backup aktivieren über Recovery Services Vault und entsprechende Backup Policy zuweisen.
+Für den Schutz vor Datenverlust sollte ein [Azure Backup](https://learn.microsoft.com/en-us/azure/backup/backup-overview) über einen Recovery Services Vault konfiguriert werden.
+Dazu die VM einem vorhandenen oder neuen Vault zuweisen und eine passende Backup Policy auswählen.
+Die Sicherung wird anschließend automatisch gemäß der Policy durchgeführt.
+Nicht benötigte Systeme oder kurzfristige Test-VMs können in Defender for Cloud als ausgenommen (exempted) markiert werden.
 
 ---
 
@@ -102,7 +102,7 @@ CustomScriptExtension-OSConfig Erweiterungen kann nach dem Deployment entfernen 
 
 - VM → **Extensions** → *CustomScriptExtension-OSConfig* → **Uninstall**
 
-Weitere gewünschte Extensions können in Defender als „Approved“ markieren.
+Weitere gewünschte Extensions können in Defender als „Approved“ markiert werden.
 
 #### Windows Defender Exploit Guard should be enabled on machines
 
@@ -110,7 +110,9 @@ Exploit Guard über GPO oder MDM aktivieren. Baseline GPOs können über Securit
 
 #### EDR configuration issues should be resolved on virtual machines
 
-EDR-Agent (z. B. Microsoft Defender for Endpoint) korrekt onboarden und Richtlinien prüfen.
+Für die Bereitstellung und automatische Registrierung des EDR-Agents ist mindestens [Defender for Servers Plan 1](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-servers-overview#plan-protection-features) erforderlich.
+Der Microsoft Defender for Endpoint-Agent (EDR) wird bei aktivem Plan 1 auf unterstützten Betriebssystemen automatisch installiert und konfiguriert.
+Nicht unterstützte oder manuell verwaltete Systeme müssen ggf. manuell onboarded oder in Defender for Cloud entsprechend ausgenommen (exempted) werden.
 
 ---
 
@@ -118,15 +120,14 @@ EDR-Agent (z. B. Microsoft Defender for Endpoint) korrekt onboarden und Richtlin
 
 #### Guest Configuration extension should be installed on machines
 
-Wird nachträglich über Azure Policy installiert. Warnung kann erscheinen, wenn der Scan vor der automatischen Installation erfolgte.
+Wird nachträglich über Azure Policy installiert. (Umgebungsabhängig) Warnung kann erscheinen, wenn der Scan vor der automatischen Installation erfolgte.
 
 #### Audit flow logs configuration for every virtual network
 
-NSG Flow Logs aktivieren:
-
-- Network Watcher aktivieren
-- NSG Flow Logs konfigurieren
-- Logs an Storage Account oder Log Analytics senden
+Für eine vollständige Überwachung des Netzwerkverkehrs sollten [NSG Flow Logs](https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview) aktiviert werden.
+Dazu muss zunächst der Network Watcher in der jeweiligen Region aktiviert sein.
+Anschließend die NSG Flow Logs auf den relevanten Network Security Groups (NSGs) aktivieren und die Protokolle an einen Storage Account oder Log Analytics Workspace senden.
+Die Flow Logs ermöglichen eine detaillierte Analyse des ein- und ausgehenden Datenverkehrs und unterstützen bei der Erkennung verdächtiger Aktivitäten.
 
 ---
 
@@ -145,6 +146,7 @@ Empfohlen:
 - Network Watcher (für Flow Logs)
 - Recovery Services Vault (für Backups)
 - Azure Policy Assignments für Defender Baselines
+- Defender for Servers Plan 1
 
 ---
 
