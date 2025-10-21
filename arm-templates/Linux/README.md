@@ -126,7 +126,7 @@ Nur Trusted Launch- oder Confidential Linux-VMs unterstützen diese Erweiterung;
 
 Es ist mindestens [Defender for Servers Plan 1](https://learn.microsoft.com/en-us/azure/defender-for-cloud/defender-for-servers-overview#plan-protection-features) erforderlich.
 
-#### Audit flow logs configuration for every virtual network
+### Audit flow logs configuration for every virtual network
 
 Für eine vollständige Überwachung des Netzwerkverkehrs sollten [NSG Flow Logs](https://learn.microsoft.com/en-us/azure/network-watcher/nsg-flow-logs-overview) aktiviert werden.
 Dazu muss zunächst der Network Watcher in der jeweiligen Region aktiviert sein.
@@ -137,7 +137,7 @@ Die Flow Logs ermöglichen eine detaillierte Analyse des ein- und ausgehenden Da
 
 ## ⚙️ Anforderungen
 
-Damit die Templates fehlerfrei deployen, müssen folgende Features in der Subscription aktiviert sein:
+Damit die Templates fehlerfrei bereitgestellt werden können, müssen folgende Features in der Subscription aktiviert sein:
 
 - Microsoft.Compute  
 - Microsoft.Network  
