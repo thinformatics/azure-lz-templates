@@ -52,16 +52,15 @@ ENABLE_MOTD_HINT=true   # Hinweis bei Login anzeigen
 # Mapping-IDs gemäß 'oscap info'
 declare -A PROFILE_MAP=(
   # CIS
-  [cis_l1_server]="xccdf_org.ssgproject.content_profile_cis_server_l1"
-  [cis_l2_server]="xccdf_org.ssgproject.content_profile_cis_server_l2"
-  [cis_l1_workstation]="xccdf_org.ssgproject.content_profile_cis_workstation_l1"
-  [cis_l2_workstation]="xccdf_org.ssgproject.content_profile_cis_workstation_l2"
+  [cis_l1_server]="xccdf_org.ssgproject.content_profile_cis_level1_server"
+  [cis_l2_server]="xccdf_org.ssgproject.content_profile_cis_level2_server"
+  [cis_l1_workstation]="xccdf_org.ssgproject.content_profile_cis_level1_workstation"
+  [cis_l2_workstation]="xccdf_org.ssgproject.content_profile_cis_level2_workstation"
 
   # STIG (Canonical Ubuntu STIG)
   [stig]="xccdf_org.ssgproject.content_profile_stig"
 
-  # Generische Profile
-  [default]="xccdf_org.ssgproject.content_profile_default"
+  # Standard
   [standard]="xccdf_org.ssgproject.content_profile_standard"
 )
 
