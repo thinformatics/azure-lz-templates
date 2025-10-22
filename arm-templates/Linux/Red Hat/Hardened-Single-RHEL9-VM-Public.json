@@ -105,16 +105,21 @@
             "type": "string",
             "defaultValue": "cis_l1_server",
             "allowedValues": [
+                "bsi",
                 "cis_l1_server",
                 "cis_l2_server",
+                "cis_l1_workstation",
+                "cis_l2_workstation",
                 "stig",
                 "stig_gui",
+                "acsc_e8",
+                "acsc_ism",
                 "anssi_minimal",
                 "anssi_intermediary",
                 "anssi_high",
                 "anssi_enhanced",
                 "pci_dss",
-                "ospp"
+                "hipaa"
             ],
             "metadata": {
                 "description": "Zu verwendendes SCAP/SSG-Profil (Kurzname) für die Remediation auf RHEL 9."

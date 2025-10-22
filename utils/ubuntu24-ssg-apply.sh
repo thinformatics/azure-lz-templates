@@ -49,7 +49,7 @@ REQ_PKGS=(openscap-scanner ssg-debderived)
 ENABLE_ETC_SYMLINK=true # Symlink /etc/ssg-remediation-info -> README
 ENABLE_MOTD_HINT=true   # Hinweis bei Login anzeigen
 
-# Mapping-IDs gemäß 'oscap info'
+# Mapping-IDs gemäß 'oscap info' / https://complianceascode.github.io/content-pages/guides/index.html
 declare -A PROFILE_MAP=(
   # CIS
   [cis_l1_server]="xccdf_org.ssgproject.content_profile_cis_level1_server"
@@ -59,9 +59,6 @@ declare -A PROFILE_MAP=(
 
   # STIG (Canonical Ubuntu STIG)
   [stig]="xccdf_org.ssgproject.content_profile_stig"
-
-  # Standard
-  [standard]="xccdf_org.ssgproject.content_profile_standard"
 )
 
 # ---------- Hilfsfunktionen ----------

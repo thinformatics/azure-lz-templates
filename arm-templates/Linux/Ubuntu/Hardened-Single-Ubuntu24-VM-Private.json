@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "description": "Red Hat Enterprise Linux 9.x VM (Corp LZ) mit Trusted Launch, Encryption at Host und automatischer SSG-Härtung per Custom Script (OpenSCAP/SCAP Security Guide).",
+        "description": "Ubuntu 24.04 VM (Corp LZ) mit Trusted Launch, Encryption at Host und automatischer SSG-Härtung per Custom Script (OpenSCAP/SCAP Security Guide).",
         "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
         "category": "Compute/VirtualMachines"
     },
@@ -19,12 +19,7 @@
         "stage": {
             "type": "string",
             "defaultValue": "dev",
-            "allowedValues": [
-                "dev",
-                "tst",
-                "preprod",
-                "prod"
-            ],
+            "allowedValues": [ "dev", "tst", "preprod", "prod" ],
             "metadata": {
                 "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
             }
@@ -103,24 +98,14 @@
             "type": "string",
             "defaultValue": "cis_l1_server",
             "allowedValues": [
-                "bsi",
                 "cis_l1_server",
                 "cis_l2_server",
                 "cis_l1_workstation",
                 "cis_l2_workstation",
-                "stig",
-                "stig_gui",
-                "acsc_e8",
-                "acsc_ism",
-                "anssi_minimal",
-                "anssi_intermediary",
-                "anssi_high",
-                "anssi_enhanced",
-                "pci_dss",
-                "hipaa"
+                "stig"
             ],
             "metadata": {
-                "description": "Zu verwendendes SCAP/SSG-Profil (Kurzname) für die Remediation auf RHEL 9."
+                "description": "SSG-Profil (Ubuntu 24.x): CIS (Server/Workstation L1/L2), STIG."
             }
         }
     },
@@ -232,9 +217,9 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "RedHat",
-                        "offer": "RHEL",
-                        "sku": "9-lvm-gen2",
+                        "publisher": "canonical",
+                        "offer": "ubuntu-24_04-lts",
+                        "sku": "ubuntu-pro",
                         "version": "latest"
                     },
                     "osDisk": {
@@ -272,9 +257,9 @@
                 "settings": {},
                 "protectedSettings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/rhel9-ssg-apply.sh"
+                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/ubuntu24-ssg-apply.sh"
                     ],
-                    "commandToExecute": "[format('bash rhel9-ssg-apply.sh {0}', parameters('ssgProfile'))]"
+                    "commandToExecute": "[format('bash ubuntu24-ssg-apply.sh {0}', parameters('ssgProfile'))]"
                 }
             },
             "dependsOn": [

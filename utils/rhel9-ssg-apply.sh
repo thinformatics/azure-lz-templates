@@ -53,27 +53,37 @@ REQ_PKGS=(openscap-scanner scap-security-guide)
 ENABLE_ETC_SYMLINK=true # Symlink unter /etc/ssg-remediation-info anlegen/aktualisieren
 ENABLE_MOTD_HINT=true   # Login-Hinweis (MOTD) hinterlegen
 
-# Mapping-IDs gemäß 'oscap info'
+# Mapping-IDs gemäß 'oscap info' / https://complianceascode.github.io/content-pages/guides/index.html
 declare -A PROFILE_MAP=(
+
+  # BSI (Bundesamt für Sicherheit in der Informationstechnik)
+  [bsi]="xccdf_org.ssgproject.content_profile_bsi"
+
+  # CIS (Center for Internet Security)
   [cis_l1_server]="xccdf_org.ssgproject.content_profile_cis_server_l1"
   [cis_l2_server]="xccdf_org.ssgproject.content_profile_cis"
   [cis_l1_workstation]="xccdf_org.ssgproject.content_profile_cis_workstation_l1"
   [cis_l2_workstation]="xccdf_org.ssgproject.content_profile_cis_workstation_l2"
+
+  # STIG (Security Technical Implementation Guides)
   [stig]="xccdf_org.ssgproject.content_profile_stig"
   [stig_gui]="xccdf_org.ssgproject.content_profile_stig_gui"
+
+  # ACSC (Australian Cyber Security Centre)
+  [acsc_e8]="xccdf_org.ssgproject.content_profile_e8"
+  [acsc_ism]="xccdf_org.ssgproject.content_profile_ism_o"
+
+  # ANSSI (Agence nationale de la sécurité des systèmes d’information)
   [anssi_minimal]="xccdf_org.ssgproject.content_profile_anssi_bp28_minimal"
   [anssi_intermediary]="xccdf_org.ssgproject.content_profile_anssi_bp28_intermediary"
   [anssi_high]="xccdf_org.ssgproject.content_profile_anssi_bp28_high"
   [anssi_enhanced]="xccdf_org.ssgproject.content_profile_anssi_bp28_enhanced"
+
+  # PCI-DSS (Payment Card Industry Data Security Standard)
   [pci_dss]="xccdf_org.ssgproject.content_profile_pci-dss"
-  [ospp]="xccdf_org.ssgproject.content_profile_ospp"
-  [bsi]="xccdf_org.ssgproject.content_profile_bsi"
-  [ccn_basic]="xccdf_org.ssgproject.content_profile_ccn_basic"
-  [ccn_intermediate]="xccdf_org.ssgproject.content_profile_ccn_intermediate"
-  [ccn_advanced]="xccdf_org.ssgproject.content_profile_ccn_advanced"
-  [e8]="xccdf_org.ssgproject.content_profile_e8"
+
+  # HIPAA (Health Insurance Portability and Accountability Act)
   [hipaa]="xccdf_org.ssgproject.content_profile_hipaa"
-  [cui]="xccdf_org.ssgproject.content_profile_cui"
 )
 
 # ---------- Hilfsfunktionen ----------

@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "metadata": {
-        "description": "Red Hat Enterprise Linux 9.x VM (Corp LZ) mit Trusted Launch, Encryption at Host und automatischer SSG-Härtung per Custom Script (OpenSCAP/SCAP Security Guide).",
+        "description": "Ubuntu 24.04 VM (Online LZ) mit Trusted Launch, Encryption at Host und automatischer SSG-Härtung per Custom Script (OpenSCAP/SCAP Security Guide).",
         "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
         "category": "Compute/VirtualMachines"
     },
@@ -19,14 +19,9 @@
         "stage": {
             "type": "string",
             "defaultValue": "dev",
-            "allowedValues": [
-                "dev",
-                "tst",
-                "preprod",
-                "prod"
-            ],
+            "allowedValues": [ "dev", "tst", "preprod", "prod" ],
             "metadata": {
-                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
+                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod).>"
             }
         },
         "identifier": {
@@ -76,7 +71,9 @@
         },
         "adminUsername": {
             "type": "string",
-            "metadata": { "description": "Lokaler Linux-Benutzer mit sudo-Rechten." }
+            "metadata": {
+                "description": "Lokaler Linux-Benutzer mit sudo-Rechten."
+            }
         },
         "adminPassword": {
             "type": "securestring",
@@ -103,24 +100,14 @@
             "type": "string",
             "defaultValue": "cis_l1_server",
             "allowedValues": [
-                "bsi",
                 "cis_l1_server",
                 "cis_l2_server",
                 "cis_l1_workstation",
                 "cis_l2_workstation",
-                "stig",
-                "stig_gui",
-                "acsc_e8",
-                "acsc_ism",
-                "anssi_minimal",
-                "anssi_intermediary",
-                "anssi_high",
-                "anssi_enhanced",
-                "pci_dss",
-                "hipaa"
+                "stig"
             ],
             "metadata": {
-                "description": "Zu verwendendes SCAP/SSG-Profil (Kurzname) für die Remediation auf RHEL 9."
+                "description": "SSG-Profil (Ubuntu 24.x): CIS (Server/Workstation L1/L2), STIG."
             }
         }
     },
@@ -129,6 +116,7 @@
         "vmHostname": "[concat(parameters('name'), '-', parameters('identifier'))]",
         "stageLower": "[toLower(parameters('stage'))]",
         "nicName": "[concat('nic-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "ipName": "[concat('pip-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
         "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
         "subnetName": "default",
         "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
@@ -144,19 +132,13 @@
     },
     "resources": [
         {
-            "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2023-11-01",
-            "name": "[variables('nsgName')]",
-            "location": "germanywestcentral",
-            "tags": { "owner": "[parameters('ownerTag')]" },
-            "properties": { "securityRules": [] }
-        },
-        {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2023-11-01",
             "name": "[variables('vnetName')]",
             "location": "germanywestcentral",
-            "tags": { "owner": "[parameters('ownerTag')]" },
+            "tags": {
+                "owner": "[parameters('ownerTag')]"
+            },
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [ "[parameters('addressPrefix')]" ]
@@ -178,11 +160,40 @@
             ]
         },
         {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2023-11-01",
+            "name": "[variables('nsgName')]",
+            "location": "germanywestcentral",
+            "tags": {
+                "owner": "[parameters('ownerTag')]"
+            },
+            "properties": {
+                "securityRules": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2023-11-01",
+            "name": "[variables('ipName')]",
+            "location": "germanywestcentral",
+            "sku": {
+                "name": "Standard"
+            },
+            "tags": {
+                "owner": "[parameters('ownerTag')]"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Static"
+            }
+        },
+        {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2023-11-01",
             "name": "[variables('nicName')]",
             "location": "germanywestcentral",
-            "tags": { "owner": "[parameters('ownerTag')]" },
+            "tags": {
+                "owner": "[parameters('ownerTag')]"
+            },
             "properties": {
                 "ipConfigurations": [
                     {
@@ -191,14 +202,18 @@
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
                             },
-                            "privateIPAllocationMethod": "Dynamic"
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
+                            }
                         }
                     }
                 ],
                 "enableAcceleratedNetworking": false
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
             ]
         },
         {
@@ -206,8 +221,12 @@
             "apiVersion": "2023-09-01",
             "name": "[variables('vmName')]",
             "location": "germanywestcentral",
-            "identity": { "type": "SystemAssigned" },
-            "tags": { "owner": "[parameters('ownerTag')]" },
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "tags": {
+                "owner": "[parameters('ownerTag')]"
+            },
             "properties": {
                 "securityProfile": {
                     "encryptionAtHost": true,
@@ -217,7 +236,9 @@
                         "vTpmEnabled": true
                     }
                 },
-                "hardwareProfile": { "vmSize": "[parameters('vmSize')]" },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
                 "osProfile": {
                     "computerName": "[variables('vmHostname')]",
                     "adminUsername": "[parameters('adminUsername')]",
@@ -232,9 +253,9 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "RedHat",
-                        "offer": "RHEL",
-                        "sku": "9-lvm-gen2",
+                        "publisher": "canonical",
+                        "offer": "ubuntu-24_04-lts",
+                        "sku": "ubuntu-pro",
                         "version": "latest"
                     },
                     "osDisk": {
@@ -253,7 +274,11 @@
                         }
                     ]
                 },
-                "diagnosticsProfile": { "bootDiagnostics": { "enabled": true } }
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
@@ -272,9 +297,9 @@
                 "settings": {},
                 "protectedSettings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/rhel9-ssg-apply.sh"
+                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/ubuntu24-ssg-apply.sh"
                     ],
-                    "commandToExecute": "[format('bash rhel9-ssg-apply.sh {0}', parameters('ssgProfile'))]"
+                    "commandToExecute": "[format('bash ubuntu24-ssg-apply.sh {0}', parameters('ssgProfile'))]"
                 }
             },
             "dependsOn": [
@@ -283,9 +308,9 @@
         }
     ],
     "outputs": {
-        "privateIpAddress": {
+        "publicIpAddress": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))).ipConfigurations[0].properties.privateIPAddress]"
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))).ipAddress]"
         }
     }
 }
