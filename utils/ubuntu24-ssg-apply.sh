@@ -51,25 +51,18 @@ ENABLE_MOTD_HINT=true   # Hinweis bei Login anzeigen
 
 # Mapping-IDs gemäß 'oscap info'
 declare -A PROFILE_MAP=(
+  # CIS
   [cis_l1_server]="xccdf_org.ssgproject.content_profile_cis_server_l1"
-  [cis_l2_server]="xccdf_org.ssgproject.content_profile_cis"
+  [cis_l2_server]="xccdf_org.ssgproject.content_profile_cis_server_l2"
   [cis_l1_workstation]="xccdf_org.ssgproject.content_profile_cis_workstation_l1"
   [cis_l2_workstation]="xccdf_org.ssgproject.content_profile_cis_workstation_l2"
+
+  # STIG (Canonical Ubuntu STIG)
   [stig]="xccdf_org.ssgproject.content_profile_stig"
-  [stig_gui]="xccdf_org.ssgproject.content_profile_stig_gui"
-  [anssi_minimal]="xccdf_org.ssgproject.content_profile_anssi_bp28_minimal"
-  [anssi_intermediary]="xccdf_org.ssgproject.content_profile_anssi_bp28_intermediary"
-  [anssi_high]="xccdf_org.ssgproject.content_profile_anssi_bp28_high"
-  [anssi_enhanced]="xccdf_org.ssgproject.content_profile_anssi_bp28_enhanced"
-  [pci_dss]="xccdf_org.ssgproject.content_profile_pci-dss"
-  [ospp]="xccdf_org.ssgproject.content_profile_ospp"
-  [bsi]="xccdf_org.ssgproject.content_profile_bsi"
-  [ccn_basic]="xccdf_org.ssgproject.content_profile_ccn_basic"
-  [ccn_intermediate]="xccdf_org.ssgproject.content_profile_ccn_intermediate"
-  [ccn_advanced]="xccdf_org.ssgproject.content_profile_ccn_advanced"
-  [e8]="xccdf_org.ssgproject.content_profile_e8"
-  [hipaa]="xccdf_org.ssgproject.content_profile_hipaa"
-  [cui]="xccdf_org.ssgproject.content_profile_cui"
+
+  # Generische Profile
+  [default]="xccdf_org.ssgproject.content_profile_default"
+  [standard]="xccdf_org.ssgproject.content_profile_standard"
 )
 
 # ---------- Hilfsfunktionen ----------
