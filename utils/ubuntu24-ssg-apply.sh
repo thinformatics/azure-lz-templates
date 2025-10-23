@@ -51,7 +51,7 @@ ENABLE_MOTD_HINT=true   # Hinweis bei Login anzeigen
 
 # Mapping-IDs gemäß 'oscap info' / https://complianceascode.github.io/content-pages/guides/index.html
 declare -A PROFILE_MAP=(
-  # CIS
+  # CIS (Center for Internet Security)
   [cis_l1_server]="xccdf_org.ssgproject.content_profile_cis_level1_server"
   [cis_l2_server]="xccdf_org.ssgproject.content_profile_cis_level2_server"
   [cis_l1_workstation]="xccdf_org.ssgproject.content_profile_cis_level1_workstation"
