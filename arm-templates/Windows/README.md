@@ -1,8 +1,9 @@
 # ![VM](/assets/svg/vm.svg) Windows Hardened VMs
 
-ARM Templates zur automatisierten Bereitstellung von gehärteten Windows Server VMs in Azure.  
-Die Templates können mit der gewählten Microsoft [OS Config Security Baseline](#-os-config-security-baseline) und ergänzen Sicherheitsmaßnahmen automatisch bereitgestellt.
-Sie sind für den Einsatz in [Online (Public)- und Corp (Private)-Umgebungen](/README.md#landingzones-concept-cloud-adoption-framework) im Rahmen des Landingszone Konzeptes (Cloud Adoption Framework) konzipiert und können je nach Compliance-Anforderung mit unterschiedlichen Baselines betrieben werden.
+Die bereitgestellten VMs werden automatisch druch das Microsoft [OS Config Security Baseline](#-os-config-security-baseline)-Module und ergänzde Sicherheitsmaßnahmen gehärtet:
+
+Es gibt immer **paar Weise Templates** für den den Einsatz von Windows-VMs im [Online (Public)- und Corp (Private)-Bereichen einer regulierten Azure Cloud Plattform](/README.md#landingzones-concept-cloud-adoption-framework) 
+
 Es werden nur aktuelle [Gen2 Standard Windows Images](#-auswahl--verwendung-von-azure-standard-images) verwendet die alle Sicherheitsfunktionen in Azure untersützen.
 
 ---
@@ -10,8 +11,8 @@ Es werden nur aktuelle [Gen2 Standard Windows Images](#-auswahl--verwendung-von-
 ## 📌 OS Config Security Baseline
 
 Die Templates nutzen die **Windows OS Config Security Baseline**.
-Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) nach der Bereitstellung automatisch angewendet.  
-Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen nach ausgewählter Baseline automatisiert konfiguriert.
+Es kann aus den drei (aus unserer Sicht) relevantesten Optionen gewählt werden: AD-MemberServer, AD-DomainController, WindowsServer-ohne-AD.
+Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) nach der Bereitstellung automatisch angewendet und per Parameter im Templates gesteuert.
 
 👉 **Referenzen**  
 
@@ -85,8 +86,8 @@ Dadurch werden sicherheitsrelevante Betriebssystemeinstellungen nach ausgewählt
 
 ### CustomScriptExtension nach der Bereitstellung entfernen
 
-Die **CustomScriptExtension** wird während der Bereitstellung verwendet, um ein Skript zur **automatischen Anwendung der gewünschten Sicherheitsbaseline** (z. B. OSConfig oder SSG-Profil) auf der VM auszuführen.  
-Nach erfolgreicher Konfiguration wird die Erweiterung **nicht mehr benötigt** und kann entfernt werden, um die Angriffsfläche zu reduzieren und die Systemhärtung abzuschließen.
+Die Azure **CustomScriptExtension** wird während der Bereitstellung verwendet (hierbei handelt es sich um eine VM-Erweiterung), um die Maßnahmen zur Härtung der VM zu realisieren.  
+Nach erfolgreicher Konfiguration wird die Erweiterung **nicht mehr benötigt** und sollte aufgrund von Empfehlungen von Microsoft (Azure Richtlinien) aufgelöst werden.
 
 **Vorgehen:**
 
@@ -101,20 +102,16 @@ Nach erfolgreicher Konfiguration wird die Erweiterung **nicht mehr benötigt** u
 
 ---
 
-## Empfehlungen
+## Hinweise zur Security & Compliance im Azure Portal nach der Bereistellung
 
-Nach der Bereitstellung innerhalb eines [regulierten Azure-Tenants](/README.md#landingzones-concept-cloud-adoption-framework) können in **Microsoft Defender for Cloud** oder den zugehörigen **Policy-Evaluierungen** zeitverzögert (teilweise bis zu 24 Stunden) erste Empfehlungen angezeigt werden.  
-Diese Hinweise dienen der kontinuierlichen Sicherheitsüberwachung und sind bei einer durch den [**Landing Zone Accelerator**](/README.md#landingzones-concept-cloud-adoption-framework) verwalteten Umgebung, bereits Zentral berücksichtig.
+> [!NOTE]
+> Es kann bis zu 24 Stunden dauern, bis Compliance- und Sicherheitshinweis und Empfehlungen im Azure Portal angezeigt werden!
 
-Alle für virtuelle Maschinen relevanten Sicherheitsanforderungen – wie **Trusted Launch**, **Secure Boot**, **vTPM**, **Encryption at Host** und die Einhaltung der Microsoft-Sicherheitsrichtlinien – werden durch dieses Template bereits berücksichtigt und automatisch umgesetzt.  
-
-Die integrierten Standards und Sicherheitsfeatures gewährleisten somit, dass bereitgestellte VMs von Beginn an den zentralen **Compliance- und Sicherheitsrichtlinien** Ihres Unternehmens entsprechen.
+Alle für virtuelle Maschinen relevanten Sicherheitsanforderungen – wie **Trusted Launch**, **Secure Boot**, **vTPM**, **Encryption at Host** und die Einhaltung der Microsoft-Sicherheitsrichtlinien – werden durch dieses Template bereits berücksichtigt und automatisch umgesetzt.
 
 ### Übersicht
 
-### Übersicht
-
-| **Type**  |  **Empfehlung**  | **Kurzbeschreibung**  |
+| **Type**  |  **Hinweis/Empfehlung**  | **Kurzbeschreibung**  |
 |-----------|------------------|-----------------------|
 | General   | [Azure Backup should be enabled for virtual machine](#azure-backup-should-be-enabled-for-virtual-machines) | VMs über einen Recovery Services Vault sichern |
 | Defender  | [Only approved VM extensions should be installed](#only-approved-vm-extensions-should-be-installed) | Nur geprüfte und genehmigte Erweiterungen zulassen |
@@ -156,9 +153,6 @@ Dadurch werden sie künftig **nicht mehr als Sicherheitsabweichung** gemeldet un
 4. Zu **Security policy** → **Defender plans** → **Extensions** navigieren.  
 5. In der Liste der Erweiterungen die gewünschte Extension auswählen.  
 6. **Mark as approved** wählen und die Änderung speichern.
-
-> [!NOTE]
-> Das Markieren einer Erweiterung als *Approved* kennzeichnet sie als vertrauenswürdig und schließt sie künftig von Warnungen in Defender for Cloud aus.
 
 ### Windows Defender Exploit Guard should be enabled on machines
 
