@@ -15,7 +15,7 @@
 
 ### Grund Voraussetzung
 Die hier bereitgestellten Templates sollten in einer "regulierten Azure Cloud Umgebung" zum Einsatz kommen, idealerweise eine Azure-Umgebung die mit dem **Landing Zone Accelerator** konfigurierte wurde.  
-Eine solche Umgebung basiert zu meist auf dem Microsoft [**Cloud Adoption Framework (CAF)**](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/) und stellt sicher, dass alle zentralen Governance- und Sicherheitsmechanismen bereits implementiert sind - Eins solche Umgebung hat in der Regel eine Unterteilung in mehrere Archetypen, zur Bereistellung von "Ressourcen und Services", traditionell werden die Archetypen Corp und Online von Microsoft hier verwendet:
+Eine solche Umgebung basiert zu meist auf dem Microsoft [**Cloud Adoption Framework (CAF)**](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/) und stellt sicher, dass alle zentralen Governance- und Sicherheitsmechanismen bereits implementiert sind - Eine solche Umgebung hat in der Regel eine Unterteilung in mehrere Archetypen, zur Bereistellung von "Ressourcen und Services", traditionell werden die Archetypen Corp und Online von Microsoft vorgegeben:
 
 ### Unterschied zwischen [*Corp* und *Online*](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/design-area/network-topology-and-connectivity) Landing Zones
 - **Corp (Corporate)**  
