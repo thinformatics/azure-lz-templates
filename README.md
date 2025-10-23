@@ -19,7 +19,7 @@ Eine solche Umgebung basiert zu meist auf dem Microsoft [**Cloud Adoption Framew
 
 ### Unterschied zwischen [*Corp* und *Online*](https://learn.microsoft.com/en-us/azure/cloud-adoption-framework/ready/landing-zone/design-area/network-topology-and-connectivity) Landing Zones
 - **Corp (Corporate)**  
-  Wird für interne Workloads genutzt, die in <u>nicht</u> öffentlich erreichbar sein dürfen.  
+  Wird für interne Workloads genutzt, die in **nicht** öffentlich erreichbar sein dürfen.  
   Verbindungen werden typischerweise über private IP-Adressen, VPN- oder ExpressRoute-Verbindungen realisiert.  
   Fokus: *Sicherheit, Identitätsintegration und zentral koordinierte Konnektivität.*
 
