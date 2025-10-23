@@ -1,6 +1,6 @@
 # Azure Landing Zones Templates
 
-[Azure Landing Zones Templates](#landingzones-concept-cloud-adoption-framework) - for free usage without warranty and support.
+Templates für Virtuell Maschines im Kontext der Azure Landingzones  - for free usage without warranty and support.
 
 ## Azure Templates
 
