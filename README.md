@@ -31,7 +31,7 @@ Eine solche Umgebung basiert zu meist auf dem Microsoft [**Cloud Adoption Framew
 ## Sicherheits- und Compliance
 
 Die Templates unterstützen aktiv bei der Einhaltung von Anforderungen aus **ISO27001** und den **CIS-Benchmarks**.
-Die Einhaltung kann über das Azure Cloud Plattform, für die Bereitgestellten Ressourcen, nachverfolgt werden.
+Die Einhaltung kann über das Azure Cloud Portal und im Bereich der bereitgestellten Ressourcen, nachverfolgt werden.
 Die Templates helfen dabei Aufwände schon im Vorfeld zu reduziereren und liefern wertvolle Leitplanke:
 
 **Trusted Launch**, **vTPM**, **Secure Boot**, **Encryption at Host** und die Integration in **Defender for Cloud** sind u.a. automatisch berücksichtigt.  
