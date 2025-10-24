@@ -1,10 +1,10 @@
 # ![VM](../../assets/svg/vm.svg) Linux Hardened VMs
 
-Die bereitgestellten VMs werden automatisch druch das die [OpenSCAP / SCAP Security Guide (SSG) Baseline](#-linux-security-baseline-openscap--ssg) und ergänzde Sicherheitsmaßnahmen gehärtet:
+Die bereitgestellten VMs werden automatisch durch die [OpenSCAP / SCAP Security Guide (SSG) Baseline](#-linux-security-baseline-openscap--ssg) und ergänzende Sicherheitsmaßnahmen gehärtet:
 
-Es gibt immer **paar Weise Templates** für den den Einsatz von Windows-VMs im [Online (Public)- und Corp (Private)-Bereichen einer regulierten Azure Cloud Plattform](/README.md#grund-voraussetzung)
+Es gibt immer **paarweise Templates** für den Einsatz von Windows-VMs im [Online (Public)- und Corp (Private)-Bereichen einer regulierten Azure Cloud Plattform](/README.md#grund-voraussetzung)
 
-Es werden nur aktuelle [Gen2 Standard Linux Images](/docs/ADVICE-AND-IMAGES.md#-auswahl--verwendung-von-azure-standard-images) verwendet die alle Sicherheitsfunktionen in Azure verwendet.
+Es werden nur aktuelle [Gen2 Standard Linux Images](/docs/ADVICE-AND-IMAGES.md#-auswahl--verwendung-von-azure-standard-images) verwendet, die alle Sicherheitsfunktionen in Azure unterstützen.
 
 ---
 
@@ -32,14 +32,14 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| 🐧 Red Hat Enterprice Linux - 9.x [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
+| 🐧 Red Hat Enterprise Linux - 9.x [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
 | ![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](/assets/svg/nic.svg) Network Interface |
 |   | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FRed%2520Hat%2FHardened-Single-RHEL9-VM-Public.json)  
-👉 [Empfholene Nacharbeiten](#-nacharbeiten)
+👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
 ---
 
@@ -49,14 +49,14 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| 🐧 Red Hat Enterprice Linux - 9.x [*latest*] | keine Public IP |
+| 🐧 Red Hat Enterprise Linux - 9.x [*latest*] | keine Public IP |
 | Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
 |![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)  | ![NIC](/assets/svg/nic.svg) Network Interface |
 |  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FRed%2520Hat%2FHardened-Single-RHEL9-VM-Private.json)  
-👉 [Empfholene Nacharbeiten](#-nacharbeiten)
+👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
 ---
 
@@ -80,12 +80,12 @@ Nach erfolgreicher Konfiguration wird die Erweiterung **nicht mehr benötigt** u
 
 ---
 
-## 📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereistellung
+## 📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereitstellung
 
 > [!NOTE]
 > Es kann bis zu 24 Stunden dauern, bis Compliance- und Sicherheitshinweis und Empfehlungen im Azure Portal angezeigt werden!
 
-Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeigt und werden vom Templates nicht aufgelöst.
+Folgende Hinweise und Empfehlungen werden nach der Bereitstellung der VM angezeigt und werden vom Templates nicht aufgelöst.
 
 | **Type**      |  **Empfehlung**  | **Kurzbeschreibung**  |
 |---------------|------------------|-----------------------|
@@ -96,7 +96,7 @@ Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeig
 | 🐧Linux      | [EDR solution should be installed on Virtual Machines](/docs/ADVICE-AND-IMAGES.md#edr-solution-should-be-installed-on-virtual-machines)* | Endpoint Detection & Response-Agent installieren (z. B. Defender for Servers)|
 | 🐧Linux      | [Guest Attestation extension should be installed on supported Linux virtual machines](/docs/ADVICE-AND-IMAGES.md#guest-attestation-extension-should-be-installed-on-supported-linux-virtual-machines)* | Guest Attestation-Erweiterung aktivieren (TPM-/vTPM-Validierung)|
 
-*Können durch Azure-Richtlinen (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
+*Können durch Azure-Richtlinien (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
 
 Alle für virtuelle Maschinen relevanten Sicherheitsanforderungen – wie **Trusted Launch**, **Secure Boot**, **vTPM**, **Encryption at Host** und die Einhaltung der Microsoft-Sicherheitsrichtlinien – werden durch dieses Template aber berücksichtigt und automatisch umgesetzt.
 

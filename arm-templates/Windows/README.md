@@ -1,10 +1,10 @@
 # ![VM](/assets/svg/vm.svg) Windows Hardened VMs
 
-Die bereitgestellten VMs werden automatisch druch das Microsoft [OS Config Security Baseline](#-os-config-security-baseline)-Module und ergänzde Sicherheitsmaßnahmen gehärtet:
+Die bereitgestellten VMs werden automatisch durch das Microsoft [OS Config Security Baseline](#-os-config-security-baseline)-Module und ergänzende Sicherheitsmaßnahmen gehärtet:
 
-Es gibt immer **paar Weise Templates** für den den Einsatz von Windows-VMs im [Online (Public)- und Corp (Private)-Bereichen einer regulierten Azure Cloud Plattform](/README.md#grund-voraussetzung)
+Es gibt immer **paarweise Templates** für den Einsatz von Windows-VMs im [Online (Public)- und Corp (Private)-Bereichen einer regulierten Azure Cloud Plattform](/README.md#grund-voraussetzung)
 
-Es werden nur aktuelle [Gen2 Standard Windows Images](/docs/ADVICE-AND-IMAGES.md#-auswahl--verwendung-von-azure-standard-images) verwendet die alle Sicherheitsfunktionen in Azure untersützen.
+Es werden nur aktuelle [Gen2 Standard Windows Images](/docs/ADVICE-AND-IMAGES.md#-auswahl--verwendung-von-azure-standard-images) verwendet, die alle Sicherheitsfunktionen in Azure unterstützen.
 
 ---
 
@@ -27,7 +27,7 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 
 ## 🌐 Online / Public VMs
 
-### Harded-Single-WS25-VM-Public
+### Hardened-Single-WS25-VM-Public
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
@@ -37,15 +37,15 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 | ![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHarded-Single-WS25-VM-Public.json)  
-👉 [Empfholene Nacharbeiten](#-nacharbeiten)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHardened-Single-WS25-VM-Public.json)  
+👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
 <details>
   <summary>Windows Server 2022</summary>
 
 ---
 
-### Harded-Single-WS22-VM-Public
+### Hardened-Single-WS22-VM-Public
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
@@ -55,11 +55,11 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 | [![AzCompliance](https://img.shields.io/badge/ISO27001-violet)](/README.md#sicherheits--und-compliance) [![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](./assets/svg/disk.svg) Encrypted Disk |
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHarded-Single-WS22-VM-Public.json)  
-👉 [Empfholene Nacharbeiten](#-nacharbeiten)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHardened-Single-WS22-VM-Public.json)  
+👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
 > [!NOTE]
-> OS Config Baselines sind für Windows Server 2025 ausgelegt. Auch auf neuste Versionen von Windows Server 2022 lassen sich die Sicherheits-Baselines erfolgreich anwenden - der Schwerpunkt unserer Optimierung liegt jedoch auf Windows Server 2025.
+> OS Config Baselines sind für Windows Server 2025 ausgelegt. Auch auf neueste Versionen von Windows Server 2022 lassen sich die Sicherheits-Baselines erfolgreich anwenden - der Schwerpunkt unserer Optimierung liegt jedoch auf Windows Server 2025.
 
 </details>
 
@@ -67,7 +67,7 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 
 ## 🏢 Corp / Private VMs
 
-### Harded-Single-WS25-VM-Private
+### Hardened-Single-WS25-VM-Private
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
@@ -77,8 +77,8 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 | [![AzCompliance](https://img.shields.io/badge/ISO27001-violet)](/README.md#sicherheits--und-compliance) [![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance)  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHarded-Single-WS25-VM-Private.json)  
-👉 [Empfholene Nacharbeiten](#-nacharbeiten)
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHardened-Single-WS25-VM-Private.json)  
+👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
 ---
 
@@ -102,7 +102,7 @@ Nach erfolgreicher Konfiguration wird die Erweiterung **nicht mehr benötigt** u
 
 ---
 
-## 📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereistellung
+## 📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereitstellung
 
 > [!NOTE]
 > Es kann bis zu 24 Stunden dauern, bis Compliance- und Sicherheitshinweis und Empfehlungen im Azure Portal angezeigt werden!
@@ -118,7 +118,7 @@ Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeig
 | 🪟Windows   | [EDR configuration issues should be resolved on virtual machines](/docs/ADVICE-AND-IMAGES.md#edr-configuration-issues-should-be-resolved-on-virtual-machines)* | EDR-Agent über Defender for Servers Plan 1 oder höher bereitstellen |
 | 🪟Windows   | [Guest Configuration extension should be installed on machines](/docs/ADVICE-AND-IMAGES.md#guest-configuration-extension-should-be-installed-on-machines)* | Guest Configuration-Erweiterung für Policy-Compliance aktivieren |
 
-*Können durch Azure-Richtlinen (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
+*Können durch Azure-Richtlinien (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
 
 Alle für virtuelle Maschinen relevanten Sicherheitsanforderungen – wie **Trusted Launch**, **Secure Boot**, **vTPM**, **Encryption at Host** und die Einhaltung der Microsoft-Sicherheitsrichtlinien – werden durch dieses Template aber berücksichtigt und automatisch umgesetzt.
 

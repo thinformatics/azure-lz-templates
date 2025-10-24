@@ -4,17 +4,17 @@ Dieses Dokument bündelt alle sicherheitsrelevanten Empfehlungen und technischen
 Es beschreibt die zugrunde liegende Auswahl der verwendeten OS-Images sowie die wichtigsten Azure- und Defender-Empfehlungen, die nach der Bereitstellung von Windows- und Linux-VMs auftreten können.
 
 - [**💽 Auswahl & Verwendung von Azure Standard-Images**](#-auswahl--verwendung-von-azure-standard-images)
-- [**📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereistellung**](#-hinweise-zur-security--compliance-im-azure-portal-nach-der-bereistellung)
+- [**📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereitstellung**](#-hinweise-zur-security--compliance-im-azure-portal-nach-der-bereitstellung)
 - [**📑 Weitere Empfehlungen**](#-weitere-empfehlungen)
 
 ## 💽 Auswahl & Verwendung von Azure Standard-Images
 
-Für die Bereitstellung virtueller Maschinen werden in den ARM Templates ausschließlich **aktuelle Azure Marketplace Gen2 Standard-Images** verwendet.
+Für die Bereitstellung virtueller Maschinen werden in den ARM-Templates ausschließlich **aktuelle Azure Marketplace Gen2 Standard-Images** verwendet.
 Diese Images werden direkt von Microsoft bereitgestellt, regelmäßig aktualisiert und enthalten die jeweils neuesten Sicherheits- und Plattformfunktionen. Dadurch wird sichergestellt, dass Systeme immer auf einer geprüften Basis laufen.
 
-Azure setzt standardmäßig auf Generation 2 (Gen2) Images.
+Azure setzt standardmäßig auf Generation 2 (Gen2)-Images.
 Diese basieren auf UEFI und unterstützen Secure Boot, vTPM und Trusted Launch - die Voraussetzung für moderne Sicherheitsmechanismen in Azure.
-Generation 1 (Gen1) Images sind nur noch für Legacy-Kompatibilität verfügbar und bieten keine Unterstützung für diese Sicherheitsfeatures.
+Generation 1 (Gen1)-Images sind nur noch für Legacy-Kompatibilität verfügbar und bieten keine Unterstützung für diese Sicherheitsfeatures.
 
 ### Sicherheitsrelevante Mindestanforderungen
 
@@ -26,12 +26,12 @@ Generation 1 (Gen1) Images sind nur noch für Legacy-Kompatibilität verfügbar 
 | **Encryption at Host**                         | Verschlüsselt Daten bereits auf dem physischen Host, bevor sie auf den Datenträger geschrieben werden. Ergänzt die VM- und Disk-Verschlüsselung um eine zusätzliche Schutzebene gegen unbefugten Zugriff auf Infrastrukturebene. |
 | **Azure Defender & Monitoring Kompatibilität** | Volle Unterstützung für **Microsoft Defender for Cloud**, **Azure Monitor**, **Azure Policy** und **Microsoft Sentinel**. Inklusive Kompatibilität der **Azure Monitor Agent (AMA)** und **Defender Agents** zur Erfassung von Security Events, Systemmetriken und Compliance-Daten. |
 
-## 📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereistellung
+## 📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereitstellung
 
 > [!NOTE]
-> Es kann bis zu 24 Stunden dauern, bis Compliance- und Sicherheitshinweis und Empfehlungen im Azure Portal angezeigt werden!
+> Es kann bis zu 24 Stunden dauern, bis Compliance- und Sicherheitshinweise und Empfehlungen im Azure Portal angezeigt werden!
 
-Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeigt und werden vom Templates nicht aufgelöst.
+Folgende Hinweise und Empfehlungen werden nach der Bereitstellung der VM angezeigt und werden von den Templates nicht aufgelöst.
 
 | **Type**  |  **Hinweis/Empfehlung**  | **Kurzbeschreibung**  |
 |-----------|------------------|-----------------------|
@@ -45,7 +45,7 @@ Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeig
 | 🐧Linux     | [EDR solution should be installed on Virtual Machines](#edr-solution-should-be-installed-on-virtual-machines) | Endpoint Detection & Response-Agent installieren (z. B. Defender for Servers)|
 | 🐧Linux     | [Guest Attestation extension should be installed on supported Linux virtual machines](#guest-attestation-extension-should-be-installed-on-supported-linux-virtual-machines) | Guest Attestation-Erweiterung aktivieren (TPM-/vTPM-Validierung)|
 
-*Können durch Azure-Richtlinen (und der Verwendung des Azure Accelerators) automatisch und zentrall angewandt werden!
+*Können durch Azure-Richtlinen (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
 
 Alle für virtuelle Maschinen relevanten Sicherheitsanforderungen – wie **Trusted Launch**, **Secure Boot**, **vTPM**, **Encryption at Host** und die Einhaltung der Microsoft-Sicherheitsrichtlinien – werden durch dieses Template aber berücksichtigt und automatisch umgesetzt.
 
