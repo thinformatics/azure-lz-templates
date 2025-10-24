@@ -33,13 +33,6 @@
                 "description": "Dreistellige Nummer für Namenskonventionen, z.B. '001', '002' etc."
             }
         },
-        "ownerTag": {
-            "type": "string",
-            "defaultValue": "TEAM_ODER_OWNER",
-            "metadata": {
-                "description": "Verantwortliche Einheit (Team, Gruppe oder E-Mail) für Betrieb/Ownership; wird als Tag 'owner' gesetzt."
-            }
-        },
         "vmSize": {
             "type": "string",
             "defaultValue": "Standard_B2ms",
@@ -75,11 +68,10 @@
                 "description": "Lokaler Linux-Benutzer mit sudo-Rechten."
             }
         },
-        "adminPassword": {
-            "type": "securestring",
-            "minLength": 12,
+        "adminSshKey": {
+            "type": "string",
             "metadata": {
-                "description": "Sicheres Passwort für den lokalen Administrator: mindestens 12 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen."
+                "description": "Öffentlicher SSH-Schlüssel im OpenSSH-Format (z. B. 'ssh-ed25519 AAAA... user@host' oder 'ssh-rsa AAAA... user@host')."
             }
         },
         "addressPrefix": {
@@ -136,9 +128,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('vnetName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [ "[parameters('addressPrefix')]" ]
@@ -164,9 +153,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('nsgName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "securityRules": []
             }
@@ -179,9 +165,6 @@
             "sku": {
                 "name": "Standard"
             },
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "publicIPAllocationMethod": "Static"
             }
@@ -191,9 +174,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('nicName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "ipConfigurations": [
                     {
@@ -224,9 +204,6 @@
             "identity": {
                 "type": "SystemAssigned"
             },
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "securityProfile": {
                     "encryptionAtHost": true,
@@ -242,9 +219,16 @@
                 "osProfile": {
                     "computerName": "[variables('vmHostname')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]",
                     "linuxConfiguration": {
-                        "disablePasswordAuthentication": false,
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[parameters('adminSshKey')]"
+                                }
+                            ]
+                        },
                         "patchSettings": {
                             "patchMode": "AutomaticByPlatform",
                             "assessmentMode": "AutomaticByPlatform"

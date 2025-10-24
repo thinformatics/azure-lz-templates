@@ -11,7 +11,7 @@ Es werden nur aktuelle [Gen2 Standard Linux Images](/docs/ADVICE-AND-IMAGES.md#-
 ## 📌 Linux Security Baseline (OpenSCAP / SSG)
 
 Die ARM Templates wenden automatisiert eine Security Baseline an, welche auf dem **OpenSCAP-Framework** und den **SCAP Security Guide (SSG)**-Profilen beruht.
-Es kann aus den (aus unserer Sicht) relevantesten Konfigurationsprofilen gewählt werden: CIS, ACSC, ANSSI, BSI
+Es kann aus den (aus unserer Sicht) relevantesten Konfigurationsprofilen gewählt werden: CIS, ACSC, ANSSI, BSI ,...
 Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Bereitstellung automatisch angewendet und per Parameter im Templates gesteuert. Dadurch werden sicherheitsrelevante System- und Konfigurationseinstellungen automatisiert gemäß dem ausgewählten Compliance-Profil umgesetzt.
 
 👉 **Referenzen**  
@@ -41,6 +41,19 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FRed%2520Hat%2FHardened-Single-RHEL9-VM-Public.json)  
 👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
+### Hardened-Single-Ubuntu24-VM-Public
+
+| **Eigenschaften** | **Ressourcen** |
+|-------------------|:--------------|
+| 🐧 Ubuntu 24.04 [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
+| Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
+| ![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](/assets/svg/nic.svg) Network Interface |
+|   | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+|  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FUbuntu%2FHardened-Single-Ubuntu24-VM-Public.json) 
+👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
+
 ---
 
 ## 🏢 Corp / Private VMs
@@ -56,6 +69,19 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FRed%2520Hat%2FHardened-Single-RHEL9-VM-Private.json)  
+👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
+
+### Hardened-Single-Ubuntu24-VM-Private
+
+| **Eigenschaften** | **Ressourcen** |
+|-------------------|:--------------|
+| 🐧 Ubuntu 24.04 [*latest*] | keine Public IP |
+| Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
+|![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)  | ![NIC](/assets/svg/nic.svg) Network Interface |
+|  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+|  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FUbuntu%2FHardened-Single-Ubuntu24-VM-Private.json)  
 👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
 ---

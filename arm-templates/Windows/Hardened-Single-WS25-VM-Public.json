@@ -26,7 +26,7 @@
                 "prod"
             ],
             "metadata": {
-                "description": "Verantwortliche Einheit (Team, Gruppe oder E-Mail) für Betrieb/Ownership; wird als Tag 'owner' gesetzt."
+                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
             }
         },
         "identifier": {
@@ -36,13 +36,6 @@
             "maxLength": 3,
             "metadata": {
                 "description": "Dreistellige Nummer für Namenskonventionen, z.B. '001', '002' etc."
-            }
-        },
-        "ownerTag": {
-            "type": "string",
-            "defaultValue": "TEAM_ODER_OWNER",
-            "metadata": {
-                "description": "Owner/Verantwortlicher dieser Ressourcen (Name, Gruppe oder E-Mail) je nach eigener Konvention."
             }
         },
         "vmSize": {
@@ -144,9 +137,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('vnetName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [
@@ -174,9 +164,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('nsgName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "securityRules": []
             }
@@ -189,9 +176,6 @@
             "sku": {
                 "name": "Standard"
             },
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "publicIPAllocationMethod": "Static"
             }
@@ -201,9 +185,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('nicName')]",
             "location": "germanywestcentral",
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
-            },
             "properties": {
                 "ipConfigurations": [
                     {
@@ -233,9 +214,6 @@
             "location": "germanywestcentral",
             "identity": {
                 "type": "SystemAssigned"
-            },
-            "tags": {
-                "owner": "[parameters('ownerTag')]"
             },
             "properties": {
                 "securityProfile": {

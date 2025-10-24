@@ -38,13 +38,6 @@
                 "description": "Dreistellige Nummer für Namenskonventionen, z.B. '001', '002' etc."
             }
         },
-        "ownerTag": {
-            "type": "string",
-            "defaultValue": "TEAM_ODER_OWNER",
-            "metadata": {
-                "description": "Verantwortliche Einheit (Team, Gruppe oder E-Mail) für Betrieb/Ownership; wird als Tag 'owner' gesetzt."
-            }
-        },
         "vmSize": {
             "type": "string",
             "defaultValue": "Standard_B2ms",
@@ -150,7 +143,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('nsgName')]",
             "location": "germanywestcentral",
-            "tags": { "owner": "[parameters('ownerTag')]" },
             "properties": { "securityRules": [] }
         },
         {
@@ -158,7 +150,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('vnetName')]",
             "location": "germanywestcentral",
-            "tags": { "owner": "[parameters('ownerTag')]" },
             "properties": {
                 "addressSpace": {
                     "addressPrefixes": [ "[parameters('addressPrefix')]" ]
@@ -184,7 +175,6 @@
             "apiVersion": "2023-11-01",
             "name": "[variables('nicName')]",
             "location": "germanywestcentral",
-            "tags": { "owner": "[parameters('ownerTag')]" },
             "properties": {
                 "ipConfigurations": [
                     {
@@ -209,7 +199,6 @@
             "name": "[variables('vmName')]",
             "location": "germanywestcentral",
             "identity": { "type": "SystemAssigned" },
-            "tags": { "owner": "[parameters('ownerTag')]" },
             "properties": {
                 "securityProfile": {
                     "encryptionAtHost": true,
