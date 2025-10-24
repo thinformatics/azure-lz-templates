@@ -114,9 +114,9 @@ Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeig
 | General      | [Azure Backup should be enabled for virtual machine](/docs/ADVICE-AND-IMAGES.md#azure-backup-should-be-enabled-for-virtual-machines) | VMs über einen Recovery Services Vault sichern |
 | General      | [Only approved VM extensions should be installed](/docs/ADVICE-AND-IMAGES.md#only-approved-vm-extensions-should-be-installed)* | Nur geprüfte und genehmigte Erweiterungen zulassen |
 | General      | [Audit flow logs configuration for every virtual network](/docs/ADVICE-AND-IMAGES.md#audit-flow-logs-configuration-for-every-virtual-network)* | Netzwerk-Flow-Logs aktivieren, um Datenverkehr zu überwachen |
-| 🪟 Windows   | [Windows Defender Exploit Guard should be enabled on machines](/docs/ADVICE-AND-IMAGES.md#windows-defender-exploit-guard-should-be-enabled-on-machines)* | Exploit Guard aktivieren, um Angriffe proaktiv zu blockieren |
-| 🪟 Windows   | [EDR configuration issues should be resolved on virtual machines](/docs/ADVICE-AND-IMAGES.md#edr-configuration-issues-should-be-resolved-on-virtual-machines)* | EDR-Agent über Defender for Servers Plan 1 oder höher bereitstellen |
-| 🪟 Windows   | [Guest Configuration extension should be installed on machines](/docs/ADVICE-AND-IMAGES.md#guest-configuration-extension-should-be-installed-on-machines)* | Guest Configuration-Erweiterung für Policy-Compliance aktivieren |
+| 🪟Windows   | [Windows Defender Exploit Guard should be enabled on machines](/docs/ADVICE-AND-IMAGES.md#windows-defender-exploit-guard-should-be-enabled-on-machines)* | Exploit Guard aktivieren, um Angriffe proaktiv zu blockieren |
+| 🪟Windows   | [EDR configuration issues should be resolved on virtual machines](/docs/ADVICE-AND-IMAGES.md#edr-configuration-issues-should-be-resolved-on-virtual-machines)* | EDR-Agent über Defender for Servers Plan 1 oder höher bereitstellen |
+| 🪟Windows   | [Guest Configuration extension should be installed on machines](/docs/ADVICE-AND-IMAGES.md#guest-configuration-extension-should-be-installed-on-machines)* | Guest Configuration-Erweiterung für Policy-Compliance aktivieren |
 
 *Können durch Azure-Richtlinen (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
 

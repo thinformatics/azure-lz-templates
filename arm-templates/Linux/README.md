@@ -92,9 +92,9 @@ Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeig
 | General       | [Azure Backup should be enabled for virtual machine](/docs/ADVICE-AND-IMAGES.md#azure-backup-should-be-enabled-for-virtual-machines) | VMs über einen Recovery Services Vault sichern |
 | General       | [Only approved VM extensions should be installed](/docs/ADVICE-AND-IMAGES.md#only-approved-vm-extensions-should-be-installed)* | Nur geprüfte und genehmigte Erweiterungen zulassen |
 | General       | [Audit flow logs configuration for every virtual network](/docs/ADVICE-AND-IMAGES.md#audit-flow-logs-configuration-for-every-virtual-network)* | Netzwerk-Flow-Logs aktivieren, um Datenverkehr zu überwachen |
-| 🐧 Linux      | [Machines should have vulnerability findings resolved](/docs/ADVICE-AND-IMAGES.md#machines-should-have-vulnerability-findings-resolved)* | Schwachstellen auf VMs regelmäßig prüfen und beheben |
-| 🐧 Linux      | [EDR solution should be installed on Virtual Machines](/docs/ADVICE-AND-IMAGES.md#edr-solution-should-be-installed-on-virtual-machines)* | Endpoint Detection & Response-Agent installieren (z. B. Defender for Servers)|
-| 🐧 Linux      | [Guest Attestation extension should be installed on supported Linux virtual machines](/docs/ADVICE-AND-IMAGES.md#guest-attestation-extension-should-be-installed-on-supported-linux-virtual-machines)* | Guest Attestation-Erweiterung aktivieren (TPM-/vTPM-Validierung)|
+| 🐧Linux      | [Machines should have vulnerability findings resolved](/docs/ADVICE-AND-IMAGES.md#machines-should-have-vulnerability-findings-resolved)* | Schwachstellen auf VMs regelmäßig prüfen und beheben |
+| 🐧Linux      | [EDR solution should be installed on Virtual Machines](/docs/ADVICE-AND-IMAGES.md#edr-solution-should-be-installed-on-virtual-machines)* | Endpoint Detection & Response-Agent installieren (z. B. Defender for Servers)|
+| 🐧Linux      | [Guest Attestation extension should be installed on supported Linux virtual machines](/docs/ADVICE-AND-IMAGES.md#guest-attestation-extension-should-be-installed-on-supported-linux-virtual-machines)* | Guest Attestation-Erweiterung aktivieren (TPM-/vTPM-Validierung)|
 
 *Können durch Azure-Richtlinen (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
 

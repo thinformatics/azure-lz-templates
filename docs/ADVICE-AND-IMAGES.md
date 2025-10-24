@@ -38,12 +38,12 @@ Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeig
 | General      | [Azure Backup should be enabled for virtual machine](#azure-backup-should-be-enabled-for-virtual-machines) | VMs über einen Recovery Services Vault sichern |
 | General      | [Only approved VM extensions should be installed](#only-approved-vm-extensions-should-be-installed) | Nur geprüfte und genehmigte Erweiterungen zulassen* |
 | General      | [Audit flow logs configuration for every virtual network](#audit-flow-logs-configuration-for-every-virtual-network) | Netzwerk-Flow-Logs aktivieren, um Datenverkehr zu überwachen* |
-| 🪟 Windows   | [Windows Defender Exploit Guard should be enabled on machines](#windows-defender-exploit-guard-should-be-enabled-on-machines) | Exploit Guard aktivieren, um Angriffe proaktiv zu blockieren* |
-| 🪟 Windows   | [EDR configuration issues should be resolved on virtual machines](#edr-configuration-issues-should-be-resolved-on-virtual-machines) | EDR-Agent über Defender for Servers Plan 1 oder höher bereitstellen* |
-| 🪟 Windows   | [Guest Configuration extension should be installed on machines](#guest-configuration-extension-should-be-installed-on-machines) | Guest Configuration-Erweiterung für Policy-Compliance aktivieren* |
-| 🐧 Linux     | [Machines should have vulnerability findings resolved](#machines-should-have-vulnerability-findings-resolved) | Schwachstellen auf VMs regelmäßig prüfen und beheben |
-| 🐧 Linux     | [EDR solution should be installed on Virtual Machines](#edr-solution-should-be-installed-on-virtual-machines) | Endpoint Detection & Response-Agent installieren (z. B. Defender for Servers)|
-| 🐧 Linux     | [Guest Attestation extension should be installed on supported Linux virtual machines](#guest-attestation-extension-should-be-installed-on-supported-linux-virtual-machines) | Guest Attestation-Erweiterung aktivieren (TPM-/vTPM-Validierung)|
+| 🪟Windows   | [Windows Defender Exploit Guard should be enabled on machines](#windows-defender-exploit-guard-should-be-enabled-on-machines) | Exploit Guard aktivieren, um Angriffe proaktiv zu blockieren* |
+| 🪟Windows   | [EDR configuration issues should be resolved on virtual machines](#edr-configuration-issues-should-be-resolved-on-virtual-machines) | EDR-Agent über Defender for Servers Plan 1 oder höher bereitstellen* |
+| 🪟Windows   | [Guest Configuration extension should be installed on machines](#guest-configuration-extension-should-be-installed-on-machines) | Guest Configuration-Erweiterung für Policy-Compliance aktivieren* |
+| 🐧Linux     | [Machines should have vulnerability findings resolved](#machines-should-have-vulnerability-findings-resolved) | Schwachstellen auf VMs regelmäßig prüfen und beheben |
+| 🐧Linux     | [EDR solution should be installed on Virtual Machines](#edr-solution-should-be-installed-on-virtual-machines) | Endpoint Detection & Response-Agent installieren (z. B. Defender for Servers)|
+| 🐧Linux     | [Guest Attestation extension should be installed on supported Linux virtual machines](#guest-attestation-extension-should-be-installed-on-supported-linux-virtual-machines) | Guest Attestation-Erweiterung aktivieren (TPM-/vTPM-Validierung)|
 
 *Können durch Azure-Richtlinen (und der Verwendung des Azure Accelerators) automatisch und zentrall angewandt werden!
 
