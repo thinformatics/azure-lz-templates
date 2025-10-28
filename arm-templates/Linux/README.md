@@ -35,7 +35,7 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 | 🐧 Red Hat Enterprise Linux - 9.x [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
 | ![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](/assets/svg/nic.svg) Network Interface |
-|   | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance)  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FRed%2520Hat%2FHardened-Single-RHEL9-VM-Public.json)  
@@ -48,7 +48,7 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 | 🐧 Ubuntu 24.04 [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
 | ![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](/assets/svg/nic.svg) Network Interface |
-|   | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance)  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FUbuntu%2FHardened-Single-Ubuntu24-VM-Public.json) 
@@ -65,7 +65,7 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 | 🐧 Red Hat Enterprise Linux - 9.x [*latest*] | keine Public IP |
 | Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
 |![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)  | ![NIC](/assets/svg/nic.svg) Network Interface |
-|  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FRed%2520Hat%2FHardened-Single-RHEL9-VM-Private.json)  
@@ -78,7 +78,7 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 | 🐧 Ubuntu 24.04 [*latest*] | keine Public IP |
 | Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
 |![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)  | ![NIC](/assets/svg/nic.svg) Network Interface |
-|  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FUbuntu%2FHardened-Single-Ubuntu24-VM-Private.json)  

@@ -34,7 +34,7 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 | 🪟 Windows Server 2025 - Gen2 [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
 | ![Version](https://img.shields.io/badge/Version-0.0.9-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](/assets/svg/nic.svg) Network Interface |
-| ![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHardened-Single-WS25-VM-Public.json)  
@@ -52,7 +52,7 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 | 🪟 Windows Server 2022 - Gen2 [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
 | Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
 |  ![Version](https://img.shields.io/badge/Version-0.0.9-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](/assets/svg/nic.svg) Network Interface |
-| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet)](/README.md#sicherheits--und-compliance) [![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](./assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHardened-Single-WS22-VM-Public.json)  

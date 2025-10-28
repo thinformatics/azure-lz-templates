@@ -125,7 +125,7 @@ Diese Erweiterung ermöglicht es **Azure Policy**, Konfigurations- und Complianc
 
 In einer regulierten Azure Umgebung wird die Erweiterung **automatisch über Azure Policy** installiert.
 
-🐧 Linux spezifisch
+### 🐧 Linux spezifisch
 
 ---
 
