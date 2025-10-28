@@ -51,7 +51,7 @@ Die Baseline wird über das [Bash-Skript](/utils/rhel9-ssg-apply.sh) nach der Be
 | [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance)  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FUbuntu%2FHardened-Single-Ubuntu24-VM-Public.json) 
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FLinux%2FUbuntu%2FHardened-Single-Ubuntu24-VM-Public.json)  
 👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
 ---
