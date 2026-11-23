@@ -12,7 +12,7 @@ Es werden nur aktuelle [Gen2 Standard Windows Images](/docs/ADVICE-AND-IMAGES.md
 
 Die Templates nutzen die **Windows OS Config Security Baseline**.
 Es kann aus den drei (aus unserer Sicht) relevantesten Optionen gewählt werden: AD-MemberServer, AD-DomainController, WindowsServer-ohne-AD.
-Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) nach der Bereitstellung automatisch angewendet und per Parameter im Templates gesteuert.
+Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) nach der Bereitstellung automatisch angewendet und per Parameter im Template gesteuert.
 
 👉 **Referenzen**  
 
@@ -23,6 +23,9 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 > [!NOTE]
 > Eine vollständige Übersicht aller verfügbaren Baselines und deren Inhalte finden Sie im offiziellen [OS Config-Repository auf GitHub](https://github.com/microsoft/osconfig/tree/main/security/ws2025).
 
+> [!NOTE]
+> **Hotpatching** (Updates ohne Neustart) wird von Azure nur für *Azure Edition*-Images unterstützt und ist daher nur im Template *Hardened-Single-WS25-VM-Public* aktiv.
+
 ---
 
 ## 🌐 Online / Public VMs
@@ -31,37 +34,14 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
-| 🪟 Windows Server 2025 - Gen2 [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
-| Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
-| ![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](/assets/svg/nic.svg) Network Interface |
+| 🪟 Windows Server 2025 Datacenter Azure Edition - Gen2 [*latest*] (Hotpatching) | ![PIP](/assets/svg/pip.svg) Public IP |
+| Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET (Ausgang über Public IP) |
+| ![Version](https://img.shields.io/badge/Version-1.1.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-11/2026-green)](https://thinformatics.com) | ![NIC](/assets/svg/nic.svg) Network Interface (Accelerated Networking) |
 | [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHardened-Single-WS25-VM-Public.json)  
 👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
-
-<details>
-  <summary>Windows Server 2022</summary>
-
----
-
-### Hardened-Single-WS22-VM-Public
-
-| **Eigenschaften** | **Ressourcen** |
-|-------------------|:--------------|
-| 🪟 Windows Server 2022 - Gen2 [*latest*] | ![PIP](/assets/svg/pip.svg) Public IP |
-| Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
-|  ![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)| ![NIC](/assets/svg/nic.svg) Network Interface |
-| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group |
-|  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
-
-[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHardened-Single-WS22-VM-Public.json)  
-👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
-
-> [!NOTE]
-> OS Config Baselines sind für Windows Server 2025 ausgelegt. Auch auf neueste Versionen von Windows Server 2022 lassen sich die Sicherheits-Baselines erfolgreich anwenden - der Schwerpunkt unserer Optimierung liegt jedoch auf Windows Server 2025.
-
-</details>
 
 ---
 
@@ -72,14 +52,16 @@ Diese Baseline wird mit dem [PowerShell-Skript](/utils/Initialize-OSConfig.ps1) 
 | **Eigenschaften** | **Ressourcen** |
 |-------------------|:--------------|
 | 🪟 Windows Server 2025 - Gen2 [*latest*] | keine Public IP |
-| Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) VNET |
-|![Version](https://img.shields.io/badge/Version-1.0.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-10/2025-green)](https://thinformatics.com)  | ![NIC](/assets/svg/nic.svg) Network Interface |
-| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet)](/README.md#sicherheits--und-compliance) [![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance)  | ![NSG](/assets/svg/nsg.svg) Network Security Group |
+| Region: Germany West Central | ![VNET](/assets/svg/vnet.svg) Bestehendes Subnetz (`existing`) *oder* neues VNET (`new`) |
+| ![Version](https://img.shields.io/badge/Version-1.1.0-blue) [![LastUpdated](https://img.shields.io/badge/LastChange-11/2026-green)](https://thinformatics.com) | ![NIC](/assets/svg/nic.svg) Network Interface (Accelerated Networking) |
+| [![AzCompliance](https://img.shields.io/badge/ISO27001-violet) ![AzCompliance](https://img.shields.io/badge/CIS-violet)](/README.md#sicherheits--und-compliance) | ![NSG](/assets/svg/nsg.svg) Network Security Group (nur `new` bzw. optional) |
 |  | ![DISK](/assets/svg/disk.svg) Encrypted Disk |
 
 [![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fthinformatics%2Fazure-lz-templates%2Frefs%2Fheads%2Fmain%2Farm-templates%2FWindows%2FHardened-Single-WS25-VM-Private.json)  
 👉 [Empfohlene Nacharbeiten](#-nacharbeiten)
 
+> [!TIP]
+> Netzwerk-Modi und Abschalten des Standard-Internetzugangs: [Netzwerk](/README.md#netzwerk)
 ---
 
 ## 🔧 Nacharbeiten
@@ -105,9 +87,9 @@ Nach erfolgreicher Konfiguration wird die Erweiterung **nicht mehr benötigt** u
 ## 📘 Hinweise zur Security & Compliance im Azure Portal nach der Bereitstellung
 
 > [!NOTE]
-> Es kann bis zu 24 Stunden dauern, bis Compliance- und Sicherheitshinweis und Empfehlungen im Azure Portal angezeigt werden!
+> Es kann bis zu 24 Stunden dauern, bis Compliance- und Sicherheitshinweise und Empfehlungen im Azure Portal angezeigt werden!
 
-Folgende Hinweise und Empfehlungen werden nach der Bereistellung der VM angezeigt und werden vom Templates nicht aufgelöst.
+Folgende Hinweise und Empfehlungen werden nach der Bereitstellung der VM angezeigt und werden vom Template nicht aufgelöst.
 
 | **Type**     |  **Hinweis/Empfehlung**  | **Kurzbeschreibung**  |
 |--------------|--------------------------|-----------------------|
@@ -135,6 +117,8 @@ Damit die Templates fehlerfrei bereitgestellt werden können, müssen folgende *
 - Microsoft.Storage  
 - Microsoft.Insights  
 - Microsoft.GuestConfiguration  
+
+Zusätzlich muss das Feature **Encryption at Host** registriert sein: `az feature register --namespace Microsoft.Compute --name EncryptionAtHost`
 
 ---
 

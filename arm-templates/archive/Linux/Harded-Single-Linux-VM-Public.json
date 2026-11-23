@@ -1,6 +1,10 @@
 {
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.3",
+  "contentVersion": "1.0.0.4",
+  "metadata": {
+    "status": "Legacy",
+    "description": "Archiviert"
+  },
   "parameters": {
     "name": {
       "type": "string",
@@ -38,8 +42,8 @@
       "defaultValue": "Ubuntu Server 24.04 LTS - x64 Gen2",
       "allowedValues": [
         "Ubuntu Server 24.04 LTS - x64 Gen2",
-        "Red Hat Enterprise Linux 9.4 (LVM) - x64 Gen2",
-        "SUSE Linux Enterprise Server 15 SP5 +Patching - x64 Gen2"
+        "Red Hat Enterprise Linux 9 (LVM, latest) - x64 Gen2",
+        "SUSE Linux Enterprise Server 15 SP7 +Patching - x64 Gen2"
       ],
       "metadata": { "description": "Auswahl des Marketplace-Images" }
     }
@@ -58,14 +62,14 @@
         "offer": "ubuntu-24_04-lts",
         "sku": "server"
       },
-      "Red Hat Enterprise Linux 9.4 (LVM) - x64 Gen2": {
+      "Red Hat Enterprise Linux 9 (LVM, latest) - x64 Gen2": {
         "publisher": "RedHat",
         "offer": "RHEL",
-        "sku": "94-lvm-gen2"
+        "sku": "9-lvm-gen2"
       },
-      "SUSE Linux Enterprise Server 15 SP5 +Patching - x64 Gen2": {
+      "SUSE Linux Enterprise Server 15 SP7 +Patching - x64 Gen2": {
         "publisher": "SUSE",
-        "offer": "sles-15-sp5-basic",
+        "offer": "sles-15-sp7-basic",
         "sku": "gen2"
       }
     }

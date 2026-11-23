@@ -5,6 +5,10 @@
 #               Installiert erforderliche Pakete, prüft die Umgebung und führt
 #               eine Remediation mit oscap durch.
 #
+# DEPRECATED  : Ab Template-Version 1.1.0 nutzen die Ubuntu-Templates ubuntu-usg-apply.sh
+#               (Ubuntu Security Guide). Dieses Skript bleibt nur für ältere
+#               Deployments erhalten und wird nicht weiterentwickelt.
+#
 # Author      : Justus Knoop (thinformatics AG)
 # Version     : 1.0.0
 # Created     : 2025-10-20
@@ -44,7 +48,7 @@ set -euo pipefail
 trap 'echo "ERROR at line $LINENO: $BASH_COMMAND" >&2' ERR
 
 # ---------- Konfiguration ----------
-DS_XML="" # wird automatisch für Ubuntu 24.x ermitteltl
+DS_XML="" # wird automatisch für Ubuntu 24.x ermittelt
 REQ_PKGS=(openscap-scanner ssg-debderived)
 ENABLE_ETC_SYMLINK=true # Symlink /etc/ssg-remediation-info -> README
 ENABLE_MOTD_HINT=true   # Hinweis bei Login anzeigen

@@ -1,0 +1,2 @@
+# Shell-Skripte laufen auf Linux-VMs und müssen LF-Zeilenenden behalten
+*.sh text eol=lf

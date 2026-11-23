@@ -1,6 +1,6 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
+    "contentVersion": "1.1.0.0",
     "metadata": {
         "description": "Windows Server 2025 VM (Online LZ) mit OSConfig-Baseline.",
         "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
@@ -40,9 +40,9 @@
         },
         "vmSize": {
             "type": "string",
-            "defaultValue": "Standard_B2ms",
+            "defaultValue": "Standard_B2s_v2",
             "metadata": {
-                "description": "VM-Größe der virtuellen Maschine, z.B. 'Standard_B2ms'"
+                "description": "VM-Größe, z. B. 'Standard_B2s_v2' (2 vCPU / 8 GiB). Die Größe muss Trusted Launch, Encryption at Host und – falls aktiviert – Accelerated Networking unterstützen."
             }
         },
         "diskStorageType": {
@@ -62,7 +62,12 @@
         "osDiskSizeGiB": {
             "type": "int",
             "defaultValue": 128,
-            "allowedValues": [ 128, 256, 512, 1024 ],
+            "allowedValues": [
+                128,
+                256,
+                512,
+                1024
+            ],
             "metadata": {
                 "description": "Größe der OS-Disk in GiB - Die Größen können im Template beliebig angepasst werden."
             }
@@ -104,6 +109,13 @@
             "metadata": {
                 "description": "OS-Config-Szenario in dem die VM vorkonfiguriert werden soll."
             }
+        },
+        "enableAcceleratedNetworking": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Accelerated Networking aktivieren (geringere Latenz, höherer Durchsatz). Nur deaktivieren, wenn die gewählte VM-Größe es nicht unterstützt."
+            }
         }
     },
     "variables": {
@@ -134,7 +146,7 @@
     "resources": [
         {
             "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('vnetName')]",
             "location": "germanywestcentral",
             "properties": {
@@ -150,7 +162,8 @@
                             "addressPrefix": "[parameters('subnetPrefix')]",
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                            }
+                            },
+                            "defaultOutboundAccess": true
                         }
                     }
                 ]
@@ -161,7 +174,7 @@
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('nsgName')]",
             "location": "germanywestcentral",
             "properties": {
@@ -170,7 +183,7 @@
         },
         {
             "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('ipName')]",
             "location": "germanywestcentral",
             "sku": {
@@ -182,7 +195,7 @@
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('nicName')]",
             "location": "germanywestcentral",
             "properties": {
@@ -200,7 +213,7 @@
                         }
                     }
                 ],
-                "enableAcceleratedNetworking": false
+                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]"
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
@@ -209,7 +222,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2023-09-01",
+            "apiVersion": "2025-04-01",
             "name": "[variables('vmName')]",
             "location": "germanywestcentral",
             "identity": {
@@ -257,13 +270,17 @@
                         "diskSizeGB": "[parameters('osDiskSizeGiB')]",
                         "managedDisk": {
                             "storageAccountType": "[variables('diskStorageSku')]"
-                        }
+                        },
+                        "deleteOption": "Delete"
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
                         }
                     ]
                 },
@@ -279,7 +296,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "apiVersion": "2023-09-01",
+            "apiVersion": "2025-04-01",
             "name": "[concat(variables('vmName'), '/CustomScriptExtension-OSConfig')]",
             "location": "germanywestcentral",
             "properties": {
@@ -297,39 +314,6 @@
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
-            ]
-        },
-        {
-            "type": "Microsoft.Maintenance/maintenanceConfigurations",
-            "apiVersion": "2023-04-01",
-            "name": "[concat(variables('vmName'), '-maint')]",
-            "location": "germanywestcentral",
-            "properties": {
-                "maintenanceScope": "InGuestPatch",
-                "namespace": "Microsoft.Maintenance",
-                "visibility": "Custom",
-                "maintenanceWindow": {
-                    "duration": "04:00",
-                    "recurEvery": "Week Sunday",
-                    "startDateTime": "2025-01-01 02:00",
-                    "timeZone": "W. Europe Standard Time"
-                },
-                "extensionProperties": {
-                    "InGuestPatchMode": "Platform"
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Maintenance/configurationAssignments",
-            "apiVersion": "2023-10-01-preview",
-            "name": "[concat(variables('vmName'), '-maintAssignment')]",
-            "location": "germanywestcentral",
-            "properties": {
-                "maintenanceConfigurationId": "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', concat(variables('vmName'), '-maint'))]"
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]",
-                "[resourceId('Microsoft.Maintenance/maintenanceConfigurations', concat(variables('vmName'), '-maint'))]"
             ]
         }
     ],

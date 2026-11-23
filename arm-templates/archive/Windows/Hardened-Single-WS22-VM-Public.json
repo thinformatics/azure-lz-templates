@@ -1,0 +1,326 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.1.0.0",
+    "metadata": {
+        "description": "Windows Server 2022 VM (Online LZ) mit OSConfig-Baseline.",
+        "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
+        "category": "Compute/VirtualMachines"
+    },
+    "parameters": {
+        "name": {
+            "type": "string",
+            "defaultValue": "webserver",
+            "minLength": 3,
+            "maxLength": 11,
+            "metadata": {
+                "description": "Rollenbasierter Kurzname der VM (ohne Stage und Nummer), z. B. 'webserver', 'fileserver'."
+            }
+        },
+        "stage": {
+            "type": "string",
+            "defaultValue": "dev",
+            "allowedValues": [
+                "dev",
+                "tst",
+                "preprod",
+                "prod"
+            ],
+            "metadata": {
+                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
+            }
+        },
+        "identifier": {
+            "type": "string",
+            "defaultValue": "001",
+            "minLength": 3,
+            "maxLength": 3,
+            "metadata": {
+                "description": "Dreistellige Nummer für Namenskonventionen, z.B. '001', '002' etc."
+            }
+        },
+        "vmSize": {
+            "type": "string",
+            "defaultValue": "Standard_B2s_v2",
+            "metadata": {
+                "description": "VM-Größe, z. B. 'Standard_B2s_v2' (2 vCPU / 8 GiB). Die Größe muss Trusted Launch, Encryption at Host und – falls aktiviert – Accelerated Networking unterstützen."
+            }
+        },
+        "diskStorageType": {
+            "type": "string",
+            "defaultValue": "Standard SSD — LRS (Lokalredundant / Allround)",
+            "allowedValues": [
+                "Standard HDD — LRS (Lokalredundant / Geringe I/O)",
+                "Standard SSD — LRS (Lokalredundant / Allround)",
+                "Premium SSD — LRS  (Lokalredundant / hohe I/O)",
+                "Standard SSD — ZRS (Zonenredundant in der Region)",
+                "Premium SSD — ZRS  (Zonenredundant in der Region)"
+            ],
+            "metadata": {
+                "description": "OS-SpeicherTyp. Die Region hat drei Zonen / Separate Rechenzentren."
+            }
+        },
+        "osDiskSizeGiB": {
+            "type": "int",
+            "defaultValue": 128,
+            "allowedValues": [
+                128,
+                256,
+                512,
+                1024
+            ],
+            "metadata": {
+                "description": "Größe der OS-Disk in GiB - Die Größen können im Template beliebig angepasst werden."
+            }
+        },
+        "adminUsername": {
+            "type": "string",
+            "metadata": {
+                "description": "Lokaler Admin-Benutzername"
+            }
+        },
+        "adminPassword": {
+            "type": "securestring",
+            "minLength": 12,
+            "metadata": {
+                "description": "Sicheres Passwort für den lokalen Administrator: mindestens 12 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen."
+            }
+        },
+        "addressPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.0.0/16",
+            "metadata": {
+                "description": "Address Space des VNET (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+            }
+        },
+        "subnetPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.1.0/24",
+            "metadata": {
+                "description": "Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+            }
+        },
+        "scenario": {
+            "type": "string",
+            "allowedValues": [
+                "Member Server - Windows Server in Domäne (z.B. Fileserver)",
+                "Workgroup Member - Windows Server ohne Domäne",
+                "Domain Controller - Speziell für Active Directory Domain Controller"
+            ],
+            "metadata": {
+                "description": "OS-Config-Szenario in dem die VM vorkonfiguriert werden soll."
+            }
+        },
+        "enableAcceleratedNetworking": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Accelerated Networking aktivieren (geringere Latenz, höherer Durchsatz). Nur deaktivieren, wenn die gewählte VM-Größe es nicht unterstützt."
+            }
+        }
+    },
+    "variables": {
+        "vmName": "[concat('vm-', parameters('name'), '-', toLower(parameters('stage')), '-', parameters('identifier'))]",
+        "vmHostname": "[concat(parameters('name'), '-', parameters('identifier'))]",
+        "stageLower": "[toLower(parameters('stage'))]",
+        "nicName": "[concat('nic-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "ipName": "[concat('pip-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "vnetName": "[concat('vnet-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "subnetName": "default",
+        "nsgName": "[concat('nsg-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "osDiskName": "[concat('osdisk-', parameters('name'), '-', variables('stageLower'), '-', parameters('identifier'))]",
+        "diskSkuMap": {
+            "Standard HDD — LRS (Lokalredundant / Geringe I/O)": "Standard_LRS",
+            "Standard SSD — LRS (Lokalredundant / Allround)": "StandardSSD_LRS",
+            "Premium SSD — LRS  (Lokalredundant / hohe I/O)": "Premium_LRS",
+            "Standard SSD — ZRS (Zonenredundant in der Region)": "StandardSSD_ZRS",
+            "Premium SSD — ZRS  (Zonenredundant in der Region)": "Premium_ZRS"
+        },
+        "diskStorageSku": "[variables('diskSkuMap')[parameters('diskStorageType')]]",
+        "scenarioMap": {
+            "Member Server - Windows Server in Domäne (z.B. Fileserver)": "MemberServer",
+            "Workgroup Member - Windows Server ohne Domäne": "WorkgroupMember",
+            "Domain Controller - Speziell für Active Directory Domain Controller": "DomainController"
+        },
+        "OsConfigScenario": "[variables('scenarioMap')[parameters('scenario')]]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2025-05-01",
+            "name": "[variables('vnetName')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
+                },
+                "subnets": [
+                    {
+                        "name": "[variables('subnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('subnetPrefix')]",
+                            "networkSecurityGroup": {
+                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+                            },
+                            "defaultOutboundAccess": true
+                        }
+                    }
+                ]
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Network/networkSecurityGroups",
+            "apiVersion": "2025-05-01",
+            "name": "[variables('nsgName')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "securityRules": []
+            }
+        },
+        {
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2025-05-01",
+            "name": "[variables('ipName')]",
+            "location": "germanywestcentral",
+            "sku": {
+                "name": "Standard"
+            },
+            "properties": {
+                "publicIPAllocationMethod": "Static"
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2025-05-01",
+            "name": "[variables('nicName')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
+                            }
+                        }
+                    }
+                ],
+                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]"
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+                "[resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2025-04-01",
+            "name": "[variables('vmName')]",
+            "location": "germanywestcentral",
+            "identity": {
+                "type": "SystemAssigned"
+            },
+            "properties": {
+                "securityProfile": {
+                    "encryptionAtHost": true,
+                    "securityType": "TrustedLaunch",
+                    "uefiSettings": {
+                        "secureBootEnabled": true,
+                        "vTpmEnabled": true
+                    }
+                },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "osProfile": {
+                    "computerName": "[variables('vmHostname')]",
+                    "adminUsername": "[parameters('adminUsername')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+                        "provisionVMAgent": true,
+                        "patchSettings": {
+                            "patchMode": "AutomaticByPlatform",
+                            "assessmentMode": "AutomaticByPlatform",
+                            "enableHotpatching": false,
+                            "automaticByPlatformSettings": {
+                                "rebootSetting": "IfRequired"
+                            }
+                        }
+                    }
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2022-datacenter-g2",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "name": "[variables('osDiskName')]",
+                        "createOption": "FromImage",
+                        "diskSizeGB": "[parameters('osDiskSizeGiB')]",
+                        "managedDisk": {
+                            "storageAccountType": "[variables('diskStorageSku')]"
+                        },
+                        "deleteOption": "Delete"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+            ]
+        },
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "apiVersion": "2025-04-01",
+            "name": "[concat(variables('vmName'), '/CustomScriptExtension-OSConfig')]",
+            "location": "germanywestcentral",
+            "properties": {
+                "publisher": "Microsoft.Compute",
+                "type": "CustomScriptExtension",
+                "typeHandlerVersion": "1.10",
+                "autoUpgradeMinorVersion": true,
+                "settings": {},
+                "protectedSettings": {
+                    "fileUris": [
+                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/Initialize-OSConfig.ps1"
+                    ],
+                    "commandToExecute": "[concat('powershell -ExecutionPolicy Bypass -NoProfile -NonInteractive -File Initialize-OSConfig.ps1 -Scenario ', variables('OsConfigScenario'))]"
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Compute/virtualMachines', variables('vmName'))]"
+            ]
+        }
+    ],
+    "outputs": {
+        "publicIpAddress": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses', variables('ipName'))).ipAddress]"
+        }
+    }
+}

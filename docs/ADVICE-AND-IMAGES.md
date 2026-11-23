@@ -45,7 +45,7 @@ Folgende Hinweise und Empfehlungen werden nach der Bereitstellung der VM angezei
 | 🐧Linux     | [EDR solution should be installed on Virtual Machines](#edr-solution-should-be-installed-on-virtual-machines) | Endpoint Detection & Response-Agent installieren (z. B. Defender for Servers)|
 | 🐧Linux     | [Guest Attestation extension should be installed on supported Linux virtual machines](#guest-attestation-extension-should-be-installed-on-supported-linux-virtual-machines) | Guest Attestation-Erweiterung aktivieren (TPM-/vTPM-Validierung)|
 
-*Können durch Azure-Richtlinen (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
+*Können durch Azure-Richtlinien (und der Verwendung des Azure Accelerators) automatisch und zentral angewandt werden!
 
 Alle für virtuelle Maschinen relevanten Sicherheitsanforderungen – wie **Trusted Launch**, **Secure Boot**, **vTPM**, **Encryption at Host** und die Einhaltung der Microsoft-Sicherheitsrichtlinien – werden durch dieses Template aber berücksichtigt und automatisch umgesetzt.
 

@@ -1,8 +1,8 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
+    "contentVersion": "1.1.0.0",
     "metadata": {
-        "description": "Ubuntu 24.04 VM (Corp LZ) mit Trusted Launch, Encryption at Host und automatischer SSG-Härtung per Custom Script (OpenSCAP/SCAP Security Guide).",
+        "description": "Ubuntu 24.04 LTS Pro VM (Corp LZ) mit Trusted Launch, Encryption at Host und automatischer CIS-Härtung per Ubuntu Security Guide (USG).",
         "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
         "category": "Compute/VirtualMachines"
     },
@@ -19,7 +19,12 @@
         "stage": {
             "type": "string",
             "defaultValue": "dev",
-            "allowedValues": [ "dev", "tst", "preprod", "prod" ],
+            "allowedValues": [
+                "dev",
+                "tst",
+                "preprod",
+                "prod"
+            ],
             "metadata": {
                 "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
             }
@@ -35,9 +40,9 @@
         },
         "vmSize": {
             "type": "string",
-            "defaultValue": "Standard_B2ms",
+            "defaultValue": "Standard_B2s_v2",
             "metadata": {
-                "description": "VM-Größe der virtuellen Maschine, z.B. 'Standard_B2ms'"
+                "description": "VM-Größe, z. B. 'Standard_B2s_v2' (2 vCPU / 8 GiB). Die Größe muss Trusted Launch, Encryption at Host und – falls aktiviert – Accelerated Networking unterstützen."
             }
         },
         "diskStorageType": {
@@ -57,33 +62,27 @@
         "osDiskSizeGiB": {
             "type": "int",
             "defaultValue": 64,
-            "allowedValues": [ 64, 128, 256, 512, 1024 ],
+            "allowedValues": [
+                64,
+                128,
+                256,
+                512,
+                1024
+            ],
             "metadata": {
                 "description": "Größe der OS-Disk in GiB - Die Größen können im Template beliebig angepasst werden."
             }
         },
         "adminUsername": {
             "type": "string",
-            "metadata": { "description": "Lokaler Linux-Benutzer mit sudo-Rechten." }
+            "metadata": {
+                "description": "Lokaler Linux-Benutzer mit sudo-Rechten."
+            }
         },
         "adminSshKey": {
             "type": "string",
             "metadata": {
                 "description": "Öffentlicher SSH-Schlüssel im OpenSSH-Format (z. B. 'ssh-ed25519 AAAA... user@host' oder 'ssh-rsa AAAA... user@host')."
-            }
-        },
-        "addressPrefix": {
-            "type": "string",
-            "defaultValue": "10.10.0.0/16",
-            "metadata": {
-                "description": "Address Space des VNET (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
-            }
-        },
-        "subnetPrefix": {
-            "type": "string",
-            "defaultValue": "10.10.1.0/24",
-            "metadata": {
-                "description": "Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
             }
         },
         "ssgProfile": {
@@ -97,7 +96,53 @@
                 "stig"
             ],
             "metadata": {
-                "description": "SSG-Profil (Ubuntu 24.x): CIS (Server/Workstation L1/L2), STIG."
+                "description": "Härtungsprofil (Ubuntu Security Guide / USG, benötigt Ubuntu Pro – im Image enthalten). cis_l1_server = CIS Level 1 Server (empfohlen), stig = DISA-STIG."
+            }
+        },
+        "networkMode": {
+            "type": "string",
+            "defaultValue": "new",
+            "allowedValues": [
+                "existing",
+                "new"
+            ],
+            "metadata": {
+                "description": "'new' = eigenes, isoliertes VNet anlegen (Standard, Labs/Tests). 'existing' = VM in ein bestehendes Subnetz der Landing Zone (Spoke) legen."
+            }
+        },
+        "existingSubnetId": {
+            "type": "string",
+            "defaultValue": "",
+            "metadata": {
+                "description": "Nur bei networkMode 'existing': vollständige Resource-ID des Subnetzes, z. B. /subscriptions/<id>/resourceGroups/<rg>/providers/Microsoft.Network/virtualNetworks/<vnet>/subnets/<subnet>."
+            }
+        },
+        "attachNicNsg": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": "Nur bei networkMode 'existing': zusätzlich eine leere NSG an die Netzwerkkarte hängen. In der Landing Zone wird die Subnetz-NSG in der Regel zentral verwaltet."
+            }
+        },
+        "addressPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.0.0/16",
+            "metadata": {
+                "description": "Nur bei networkMode 'new': Address Space des VNET (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+            }
+        },
+        "subnetPrefix": {
+            "type": "string",
+            "defaultValue": "10.10.1.0/24",
+            "metadata": {
+                "description": "Nur bei networkMode 'new': Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+            }
+        },
+        "enableAcceleratedNetworking": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Accelerated Networking aktivieren (geringere Latenz, höherer Durchsatz). Nur deaktivieren, wenn die gewählte VM-Größe es nicht unterstützt."
             }
         }
     },
@@ -117,24 +162,33 @@
             "Standard SSD — ZRS (Zonenredundant in der Region)": "StandardSSD_ZRS",
             "Premium SSD — ZRS  (Zonenredundant in der Region)": "Premium_ZRS"
         },
-        "diskStorageSku": "[variables('diskSkuMap')[parameters('diskStorageType')]]"
+        "diskStorageSku": "[variables('diskSkuMap')[parameters('diskStorageType')]]",
+        "isNewNetwork": "[equals(parameters('networkMode'), 'new')]",
+        "deployNsg": "[or(variables('isNewNetwork'), parameters('attachNicNsg'))]",
+        "subnetId": "[if(variables('isNewNetwork'), resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName')), parameters('existingSubnetId'))]"
     },
     "resources": [
         {
+            "condition": "[variables('deployNsg')]",
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('nsgName')]",
             "location": "germanywestcentral",
-            "properties": { "securityRules": [] }
+            "properties": {
+                "securityRules": []
+            }
         },
         {
+            "condition": "[variables('isNewNetwork')]",
             "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('vnetName')]",
             "location": "germanywestcentral",
             "properties": {
                 "addressSpace": {
-                    "addressPrefixes": [ "[parameters('addressPrefix')]" ]
+                    "addressPrefixes": [
+                        "[parameters('addressPrefix')]"
+                    ]
                 },
                 "subnets": [
                     {
@@ -143,7 +197,8 @@
                             "addressPrefix": "[parameters('subnetPrefix')]",
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                            }
+                            },
+                            "defaultOutboundAccess": true
                         }
                     }
                 ]
@@ -154,7 +209,7 @@
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('nicName')]",
             "location": "germanywestcentral",
             "properties": {
@@ -163,24 +218,28 @@
                         "name": "ipconfig1",
                         "properties": {
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('vnetName'), variables('subnetName'))]"
+                                "id": "[variables('subnetId')]"
                             },
                             "privateIPAllocationMethod": "Dynamic"
                         }
                     }
                 ],
-                "enableAcceleratedNetworking": false
+                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]",
+                "networkSecurityGroup": "[if(and(not(variables('isNewNetwork')), parameters('attachNicNsg')), createObject('id', resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))), null())]"
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]"
+                "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
+                "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
             ]
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2023-09-01",
+            "apiVersion": "2025-04-01",
             "name": "[variables('vmName')]",
             "location": "germanywestcentral",
-            "identity": { "type": "SystemAssigned" },
+            "identity": {
+                "type": "SystemAssigned"
+            },
             "properties": {
                 "securityProfile": {
                     "encryptionAtHost": true,
@@ -190,7 +249,9 @@
                         "vTpmEnabled": true
                     }
                 },
-                "hardwareProfile": { "vmSize": "[parameters('vmSize')]" },
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
                 "osProfile": {
                     "computerName": "[variables('vmHostname')]",
                     "adminUsername": "[parameters('adminUsername')]",
@@ -223,17 +284,25 @@
                         "diskSizeGB": "[parameters('osDiskSizeGiB')]",
                         "managedDisk": {
                             "storageAccountType": "[variables('diskStorageSku')]"
-                        }
+                        },
+                        "deleteOption": "Delete"
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
                         }
                     ]
                 },
-                "diagnosticsProfile": { "bootDiagnostics": { "enabled": true } }
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
@@ -241,7 +310,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "apiVersion": "2023-09-01",
+            "apiVersion": "2025-04-01",
             "name": "[concat(variables('vmName'), '/CustomScriptExtension-Linux')]",
             "location": "germanywestcentral",
             "properties": {
@@ -252,9 +321,9 @@
                 "settings": {},
                 "protectedSettings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/ubuntu24-ssg-apply.sh"
+                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/ubuntu-usg-apply.sh"
                     ],
-                    "commandToExecute": "[format('bash ubuntu24-ssg-apply.sh {0}', parameters('ssgProfile'))]"
+                    "commandToExecute": "[format('bash ubuntu-usg-apply.sh {0}', parameters('ssgProfile'))]"
                 }
             },
             "dependsOn": [

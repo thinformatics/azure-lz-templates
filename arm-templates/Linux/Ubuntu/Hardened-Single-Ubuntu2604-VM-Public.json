@@ -1,8 +1,8 @@
 {
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
+    "contentVersion": "1.1.0.0",
     "metadata": {
-        "description": "Windows Server 2025 VM (Online LZ) mit OSConfig-Baseline.",
+        "description": "Ubuntu 26.04 LTS Pro VM (Online LZ) mit Trusted Launch, Encryption at Host und automatischer CIS-Härtung per Ubuntu Security Guide (USG).",
         "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
         "category": "Compute/VirtualMachines"
     },
@@ -26,7 +26,7 @@
                 "prod"
             ],
             "metadata": {
-                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
+                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod).>"
             }
         },
         "identifier": {
@@ -40,9 +40,9 @@
         },
         "vmSize": {
             "type": "string",
-            "defaultValue": "Standard_B2ms",
+            "defaultValue": "Standard_B2s_v2",
             "metadata": {
-                "description": "VM-Größe der virtuellen Maschine, z.B. 'Standard_B2ms'"
+                "description": "VM-Größe, z. B. 'Standard_B2s_v2' (2 vCPU / 8 GiB). Die Größe muss Trusted Launch, Encryption at Host und – falls aktiviert – Accelerated Networking unterstützen."
             }
         },
         "diskStorageType": {
@@ -61,8 +61,14 @@
         },
         "osDiskSizeGiB": {
             "type": "int",
-            "defaultValue": 128,
-            "allowedValues": [ 128, 256, 512, 1024 ],
+            "defaultValue": 64,
+            "allowedValues": [
+                64,
+                128,
+                256,
+                512,
+                1024
+            ],
             "metadata": {
                 "description": "Größe der OS-Disk in GiB - Die Größen können im Template beliebig angepasst werden."
             }
@@ -70,14 +76,13 @@
         "adminUsername": {
             "type": "string",
             "metadata": {
-                "description": "Lokaler Admin-Benutzername"
+                "description": "Lokaler Linux-Benutzer mit sudo-Rechten."
             }
         },
-        "adminPassword": {
-            "type": "securestring",
-            "minLength": 12,
+        "adminSshKey": {
+            "type": "string",
             "metadata": {
-                "description": "Sicheres Passwort für den lokalen Administrator: mindestens 12 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen."
+                "description": "Öffentlicher SSH-Schlüssel im OpenSSH-Format (z. B. 'ssh-ed25519 AAAA... user@host' oder 'ssh-rsa AAAA... user@host')."
             }
         },
         "addressPrefix": {
@@ -94,15 +99,25 @@
                 "description": "Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
             }
         },
-        "scenario": {
+        "ssgProfile": {
             "type": "string",
+            "defaultValue": "cis_l1_server",
             "allowedValues": [
-                "Member Server - Windows Server in Domäne (z.B. Fileserver)",
-                "Workgroup Member - Windows Server ohne Domäne",
-                "Domain Controller - Speziell für Active Directory Domain Controller"
+                "cis_l1_server",
+                "cis_l2_server",
+                "cis_l1_workstation",
+                "cis_l2_workstation",
+                "stig"
             ],
             "metadata": {
-                "description": "OS-Config-Szenario in dem die VM vorkonfiguriert werden soll."
+                "description": "Härtungsprofil (Ubuntu Security Guide / USG, benötigt Ubuntu Pro – im Image enthalten). cis_l1_server = CIS Level 1 Server (empfohlen), stig = DISA-STIG."
+            }
+        },
+        "enableAcceleratedNetworking": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "Accelerated Networking aktivieren (geringere Latenz, höherer Durchsatz). Nur deaktivieren, wenn die gewählte VM-Größe es nicht unterstützt."
             }
         }
     },
@@ -123,18 +138,12 @@
             "Standard SSD — ZRS (Zonenredundant in der Region)": "StandardSSD_ZRS",
             "Premium SSD — ZRS  (Zonenredundant in der Region)": "Premium_ZRS"
         },
-        "diskStorageSku": "[variables('diskSkuMap')[parameters('diskStorageType')]]",
-        "scenarioMap": {
-            "Member Server - Windows Server in Domäne (z.B. Fileserver)": "MemberServer",
-            "Workgroup Member - Windows Server ohne Domäne": "WorkgroupMember",
-            "Domain Controller - Speziell für Active Directory Domain Controller": "DomainController"
-        },
-        "OsConfigScenario": "[variables('scenarioMap')[parameters('scenario')]]"
+        "diskStorageSku": "[variables('diskSkuMap')[parameters('diskStorageType')]]"
     },
     "resources": [
         {
             "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('vnetName')]",
             "location": "germanywestcentral",
             "properties": {
@@ -150,7 +159,8 @@
                             "addressPrefix": "[parameters('subnetPrefix')]",
                             "networkSecurityGroup": {
                                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', variables('nsgName'))]"
-                            }
+                            },
+                            "defaultOutboundAccess": true
                         }
                     }
                 ]
@@ -161,7 +171,7 @@
         },
         {
             "type": "Microsoft.Network/networkSecurityGroups",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('nsgName')]",
             "location": "germanywestcentral",
             "properties": {
@@ -170,7 +180,7 @@
         },
         {
             "type": "Microsoft.Network/publicIPAddresses",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('ipName')]",
             "location": "germanywestcentral",
             "sku": {
@@ -182,7 +192,7 @@
         },
         {
             "type": "Microsoft.Network/networkInterfaces",
-            "apiVersion": "2023-11-01",
+            "apiVersion": "2025-05-01",
             "name": "[variables('nicName')]",
             "location": "germanywestcentral",
             "properties": {
@@ -200,7 +210,7 @@
                         }
                     }
                 ],
-                "enableAcceleratedNetworking": false
+                "enableAcceleratedNetworking": "[parameters('enableAcceleratedNetworking')]"
             },
             "dependsOn": [
                 "[resourceId('Microsoft.Network/virtualNetworks', variables('vnetName'))]",
@@ -209,7 +219,7 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines",
-            "apiVersion": "2023-09-01",
+            "apiVersion": "2025-04-01",
             "name": "[variables('vmName')]",
             "location": "germanywestcentral",
             "identity": {
@@ -230,25 +240,27 @@
                 "osProfile": {
                     "computerName": "[variables('vmHostname')]",
                     "adminUsername": "[parameters('adminUsername')]",
-                    "adminPassword": "[parameters('adminPassword')]",
-                    "windowsConfiguration": {
-                        "enableAutomaticUpdates": true,
-                        "provisionVMAgent": true,
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "[concat('/home/', parameters('adminUsername'), '/.ssh/authorized_keys')]",
+                                    "keyData": "[parameters('adminSshKey')]"
+                                }
+                            ]
+                        },
                         "patchSettings": {
                             "patchMode": "AutomaticByPlatform",
-                            "assessmentMode": "AutomaticByPlatform",
-                            "enableHotpatching": true,
-                            "automaticByPlatformSettings": {
-                                "rebootSetting": "IfRequired"
-                            }
+                            "assessmentMode": "AutomaticByPlatform"
                         }
                     }
                 },
                 "storageProfile": {
                     "imageReference": {
-                        "publisher": "MicrosoftWindowsServer",
-                        "offer": "WindowsServer",
-                        "sku": "2022-datacenter-g2",
+                        "publisher": "canonical",
+                        "offer": "ubuntu-pro-26_04-lts",
+                        "sku": "server",
                         "version": "latest"
                     },
                     "osDisk": {
@@ -257,13 +269,17 @@
                         "diskSizeGB": "[parameters('osDiskSizeGiB')]",
                         "managedDisk": {
                             "storageAccountType": "[variables('diskStorageSku')]"
-                        }
+                        },
+                        "deleteOption": "Delete"
                     }
                 },
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]"
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', variables('nicName'))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
                         }
                     ]
                 },
@@ -279,20 +295,20 @@
         },
         {
             "type": "Microsoft.Compute/virtualMachines/extensions",
-            "apiVersion": "2023-09-01",
-            "name": "[concat(variables('vmName'), '/CustomScriptExtension-OSConfig')]",
+            "apiVersion": "2025-04-01",
+            "name": "[concat(variables('vmName'), '/CustomScriptExtension-Linux')]",
             "location": "germanywestcentral",
             "properties": {
-                "publisher": "Microsoft.Compute",
-                "type": "CustomScriptExtension",
-                "typeHandlerVersion": "1.10",
+                "publisher": "Microsoft.Azure.Extensions",
+                "type": "CustomScript",
+                "typeHandlerVersion": "2.1",
                 "autoUpgradeMinorVersion": true,
                 "settings": {},
                 "protectedSettings": {
                     "fileUris": [
-                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/Initialize-OSConfig.ps1"
+                        "https://raw.githubusercontent.com/thinformatics/azure-lz-templates/refs/heads/main/utils/ubuntu-usg-apply.sh"
                     ],
-                    "commandToExecute": "[concat('powershell -ExecutionPolicy Bypass -NoProfile -NonInteractive -File Initialize-OSConfig.ps1 -Scenario ', variables('OsConfigScenario'))]"
+                    "commandToExecute": "[format('bash ubuntu-usg-apply.sh {0}', parameters('ssgProfile'))]"
                 }
             },
             "dependsOn": [
