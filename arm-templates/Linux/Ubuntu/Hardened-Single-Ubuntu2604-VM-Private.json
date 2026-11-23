@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.1.0.0",
     "metadata": {
-        "description": "Ubuntu 26.04 LTS Pro VM (Corp LZ) mit Trusted Launch, Encryption at Host und automatischer CIS-Härtung per Ubuntu Security Guide (USG).",
+        "description": "Ubuntu 26.04 LTS Pro VM (Corp LZ) mit Trusted Launch, Encryption at Host und automatischer CIS-Haertung per Ubuntu Security Guide (USG).",
         "moreInformation": "https://github.com/thinformatics/azure-lz-templates",
         "category": "Compute/VirtualMachines"
     },
@@ -13,7 +13,7 @@
             "minLength": 3,
             "maxLength": 11,
             "metadata": {
-                "description": "Rollenbasierter Kurzname der VM (ohne Stage und Nummer), z. B. 'webserver', 'fileserver'."
+                "description": "Rollenbasierter Kurzname der VM (ohne Stage und Nummer), z. B. webserver, fileserver."
             }
         },
         "stage": {
@@ -26,7 +26,7 @@
                 "prod"
             ],
             "metadata": {
-                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
+                "description": "Stage/Umgebung fuer Namenskonventionen (dev, tst, preprod, prod)."
             }
         },
         "identifier": {
@@ -35,14 +35,14 @@
             "minLength": 3,
             "maxLength": 3,
             "metadata": {
-                "description": "Dreistellige Nummer für Namenskonventionen, z.B. '001', '002' etc."
+                "description": "Dreistellige Nummer fuer Namenskonventionen, z.B. 001, 002 etc."
             }
         },
         "vmSize": {
             "type": "string",
             "defaultValue": "Standard_B2s_v2",
             "metadata": {
-                "description": "VM-Größe der virtuellen Maschine, z.B. 'Standard_B2s_v2'"
+                "description": "VM-Groesse der virtuellen Maschine, z.B. Standard_B2s_v2"
             }
         },
         "diskStorageType": {
@@ -70,7 +70,7 @@
                 1024
             ],
             "metadata": {
-                "description": "Größe der OS-Disk in GiB - Die Größen können im Template beliebig angepasst werden."
+                "description": "Groesse der OS-Disk in GiB - Die Groessen koennen im Template beliebig angepasst werden."
             }
         },
         "adminUsername": {
@@ -82,7 +82,7 @@
         "adminSshKey": {
             "type": "string",
             "metadata": {
-                "description": "Öffentlicher SSH-Schlüssel im OpenSSH-Format (z. B. 'ssh-ed25519 AAAA... user@host' oder 'ssh-rsa AAAA... user@host')."
+                "description": "Oeffentlicher SSH-Schluessel im OpenSSH-Format (z. B. ssh-ed25519 AAAA... user@host oder ssh-rsa AAAA... user@host)."
             }
         },
         "ssgProfile": {
@@ -107,21 +107,21 @@
                 "new"
             ],
             "metadata": {
-                "description": "'new' = eigenes VNet, 'existing' = bestehendes Subnetz"
+                "description": "new = eigenes VNet, existing = bestehendes Subnetz"
             }
         },
         "existingSubnetId": {
             "type": "string",
             "defaultValue": "",
             "metadata": {
-                "description": "Resource-ID des bestehenden Subnetzes (nur bei 'existing')"
+                "description": "Resource-ID des bestehenden Subnetzes (nur bei existing)"
             }
         },
         "attachNicNsg": {
             "type": "bool",
             "defaultValue": false,
             "metadata": {
-                "description": "Leere NSG an die Netzwerkkarte hängen (nur bei 'existing')"
+                "description": "Leere NSG an die Netzwerkkarte haengen (nur bei existing)"
             }
         },
         "addressPrefix": {
@@ -135,7 +135,7 @@
             "type": "string",
             "defaultValue": "10.10.1.0/24",
             "metadata": {
-                "description": "Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+                "description": "Subnetz-Praefix fuer default (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
             }
         },
         "enableAcceleratedNetworking": {

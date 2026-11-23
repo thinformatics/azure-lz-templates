@@ -13,7 +13,7 @@
             "minLength": 3,
             "maxLength": 11,
             "metadata": {
-                "description": "Rollenbasierter Kurzname der VM (ohne Stage und Nummer), z. B. 'webserver', 'fileserver'."
+                "description": "Rollenbasierter Kurzname der VM (ohne Stage und Nummer), z. B. webserver, fileserver."
             }
         },
         "stage": {
@@ -26,7 +26,7 @@
                 "prod"
             ],
             "metadata": {
-                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
+                "description": "Stage/Umgebung fuer Namenskonventionen (dev, tst, preprod, prod)."
             }
         },
         "identifier": {
@@ -35,14 +35,14 @@
             "minLength": 3,
             "maxLength": 3,
             "metadata": {
-                "description": "Dreistellige Nummer für Namenskonventionen, z.B. '001', '002' etc."
+                "description": "Dreistellige Nummer fuer Namenskonventionen, z.B. 001, 002 etc."
             }
         },
         "vmSize": {
             "type": "string",
             "defaultValue": "Standard_B2s_v2",
             "metadata": {
-                "description": "VM-Größe der virtuellen Maschine, z.B. 'Standard_B2s_v2'"
+                "description": "VM-Groesse der virtuellen Maschine, z.B. Standard_B2s_v2"
             }
         },
         "diskStorageType": {
@@ -69,7 +69,7 @@
                 1024
             ],
             "metadata": {
-                "description": "Größe der OS-Disk in GiB - Die Größen können im Template beliebig angepasst werden."
+                "description": "Groesse der OS-Disk in GiB - Die Groessen koennen im Template beliebig angepasst werden."
             }
         },
         "adminUsername": {
@@ -82,7 +82,7 @@
             "type": "securestring",
             "minLength": 12,
             "metadata": {
-                "description": "Sicheres Passwort für den lokalen Administrator: mindestens 12 Zeichen, mit mindestens einem Großbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen."
+                "description": "Sicheres Passwort fuer den lokalen Administrator: mindestens 12 Zeichen, mit mindestens einem Grossbuchstaben, einem Kleinbuchstaben, einer Zahl und einem Sonderzeichen."
             }
         },
         "addressPrefix": {
@@ -96,7 +96,7 @@
             "type": "string",
             "defaultValue": "10.10.1.0/24",
             "metadata": {
-                "description": "Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+                "description": "Subnetz-Praefix fuer default (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
             }
         },
         "scenario": {

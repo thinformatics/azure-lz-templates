@@ -17,12 +17,12 @@
       "type": "string",
       "defaultValue": "dev",
       "allowedValues": [ "dev", "tst", "preprod", "prod" ],
-      "metadata": { "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)" }
+      "metadata": { "description": "Stage/Umgebung fuer Namenskonventionen (dev, tst, preprod, prod)" }
     },
     "vmSize": {
       "type": "string",
       "defaultValue": "Standard_D2ls_v5",
-      "metadata": { "description": "Weitere VM-Sizes sind möglich, hier drei empfohlene Größen" }
+      "metadata": { "description": "Weitere VM-Sizes sind moeglich, hier drei empfohlene Groessen" }
     },
     "adminUsername": {
       "type": "string",
@@ -35,7 +35,7 @@
     "SSHPort": {
       "type": "string",
       "defaultValue": "*",
-      "metadata": { "description": "Quelle/CIDR für SSH-Zugriff (z. B. 203.0.113.0/24). * = überall (nicht empfohlen)" }
+      "metadata": { "description": "Quelle/CIDR fuer SSH-Zugriff (z. B. 203.0.113.0/24). * = ueberall (nicht empfohlen)" }
     },
     "linuxImage": {
       "type": "string",
