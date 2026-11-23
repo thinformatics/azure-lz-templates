@@ -61,9 +61,8 @@
         },
         "osDiskSizeGiB": {
             "type": "int",
-            "defaultValue": 64,
+            "defaultValue": 128,
             "allowedValues": [
-                64,
                 128,
                 256,
                 512,
