@@ -65,11 +65,11 @@ function Install-OSConfigOnline {
 function Get-ScenarioPath {
     param([string]$Scenario)
     switch ($Scenario) {
-        'MemberServer' { 'SecurityBaseline/WS2025/MemberServer' }
-        'WorkgroupMember' { 'SecurityBaseline/WS2025/WorkgroupMember' }
-        'DomainController' { 'SecurityBaseline/WS2025/DomainController' }
+        'MemberServer' { 'SecurityBaseline/WindowsServer/2025/MemberServer' }
+        'WorkgroupMember' { 'SecurityBaseline/WindowsServer/2025/WorkgroupMember' }
+        'DomainController' { 'SecurityBaseline/WindowsServer/2025/DomainController' }
         'SecuredCore' { 'SecuredCore' }
-        'DefenderAntivirus' { 'Defender/Antivirus' }
+        'DefenderAntivirus' { 'Defender/Antivirus/WindowsServer/2025' }
         default { throw "Unbekanntes Szenario: $Scenario" }
     }
 }
