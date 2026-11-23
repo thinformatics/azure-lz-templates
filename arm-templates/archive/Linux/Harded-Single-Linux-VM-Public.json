@@ -11,7 +11,7 @@
       "defaultValue": "vmwebserverdev001",
       "minLength": 3,
       "maxLength": 20,
-      "metadata": { "description": "Name of the Virtual Machine vm<vm role><environment><###>" }
+      "metadata": { "description": "Name of the Virtual Machine vm[vm role][environment][###]" }
     },
     "stage": {
       "type": "string",

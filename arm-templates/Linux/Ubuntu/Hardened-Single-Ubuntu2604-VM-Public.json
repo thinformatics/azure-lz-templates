@@ -26,7 +26,7 @@
                 "prod"
             ],
             "metadata": {
-                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod).>"
+                "description": "Stage/Umgebung für Namenskonventionen (dev, tst, preprod, prod)."
             }
         },
         "identifier": {
@@ -42,7 +42,7 @@
             "type": "string",
             "defaultValue": "Standard_B2s_v2",
             "metadata": {
-                "description": "VM-Größe, z. B. 'Standard_B2s_v2' (2 vCPU / 8 GiB). Die Größe muss Trusted Launch, Encryption at Host und – falls aktiviert – Accelerated Networking unterstützen."
+                "description": "VM-Größe der virtuellen Maschine, z.B. 'Standard_B2s_v2'"
             }
         },
         "diskStorageType": {
@@ -110,14 +110,14 @@
                 "stig"
             ],
             "metadata": {
-                "description": "Härtungsprofil (Ubuntu Security Guide / USG, benötigt Ubuntu Pro – im Image enthalten). cis_l1_server = CIS Level 1 Server (empfohlen), stig = DISA-STIG."
+                "description": "USG-Profil (Ubuntu 26.04): CIS (Server/Workstation L1/L2), STIG."
             }
         },
         "enableAcceleratedNetworking": {
             "type": "bool",
             "defaultValue": true,
             "metadata": {
-                "description": "Accelerated Networking aktivieren (geringere Latenz, höherer Durchsatz). Nur deaktivieren, wenn die gewählte VM-Größe es nicht unterstützt."
+                "description": "Accelerated Networking aktivieren"
             }
         }
     },

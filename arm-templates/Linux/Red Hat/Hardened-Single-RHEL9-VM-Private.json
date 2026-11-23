@@ -42,7 +42,7 @@
             "type": "string",
             "defaultValue": "Standard_B2s_v2",
             "metadata": {
-                "description": "VM-Größe, z. B. 'Standard_B2s_v2' (2 vCPU / 8 GiB). Die Größe muss Trusted Launch, Encryption at Host und – falls aktiviert – Accelerated Networking unterstützen."
+                "description": "VM-Größe der virtuellen Maschine, z.B. 'Standard_B2s_v2'"
             }
         },
         "diskStorageType": {
@@ -118,42 +118,42 @@
                 "new"
             ],
             "metadata": {
-                "description": "'new' = eigenes, isoliertes VNet anlegen (Standard, Labs/Tests). 'existing' = VM in ein bestehendes Subnetz der Landing Zone (Spoke) legen."
+                "description": "'new' = eigenes VNet, 'existing' = bestehendes Subnetz"
             }
         },
         "existingSubnetId": {
             "type": "string",
             "defaultValue": "",
             "metadata": {
-                "description": "Nur bei networkMode 'existing': vollständige Resource-ID des Subnetzes, z. B. /subscriptions/<id>/resourceGroups/<rg>/providers/Microsoft.Network/virtualNetworks/<vnet>/subnets/<subnet>."
+                "description": "Resource-ID des bestehenden Subnetzes (nur bei 'existing')"
             }
         },
         "attachNicNsg": {
             "type": "bool",
             "defaultValue": false,
             "metadata": {
-                "description": "Nur bei networkMode 'existing': zusätzlich eine leere NSG an die Netzwerkkarte hängen. In der Landing Zone wird die Subnetz-NSG in der Regel zentral verwaltet."
+                "description": "Leere NSG an die Netzwerkkarte hängen (nur bei 'existing')"
             }
         },
         "addressPrefix": {
             "type": "string",
             "defaultValue": "10.10.0.0/16",
             "metadata": {
-                "description": "Nur bei networkMode 'new': Address Space des VNET (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+                "description": "Address Space des VNET (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
             }
         },
         "subnetPrefix": {
             "type": "string",
             "defaultValue": "10.10.1.0/24",
             "metadata": {
-                "description": "Nur bei networkMode 'new': Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
+                "description": "Subnetz-Präfix für 'default' (CIDR) - Bitte vorher Netzbereich mit Cloud-Plattform-Team abstimmten"
             }
         },
         "enableAcceleratedNetworking": {
             "type": "bool",
             "defaultValue": true,
             "metadata": {
-                "description": "Accelerated Networking aktivieren (geringere Latenz, höherer Durchsatz). Nur deaktivieren, wenn die gewählte VM-Größe es nicht unterstützt."
+                "description": "Accelerated Networking aktivieren"
             }
         }
     },
